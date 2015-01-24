@@ -8,7 +8,7 @@ from __future__ import (
     absolute_import, division, print_function, unicode_literals
 )
 
-from .runcmd import output_of
+from .runcmd import output_of, return_code_of
 
 
 def branch_names():
@@ -65,4 +65,5 @@ def is_git_repo():
     Return |True| if the current working directory is in a git repository,
     False otherwise.
     """
-    raise NotImplementedError
+    cmd = ['git', 'rev-parse', '--git-dir']
+    return return_code_of(cmd) == 0

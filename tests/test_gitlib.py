@@ -14,7 +14,7 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_names, checkout, current_branch_name, is_clean
+    branch_names, checkout, current_branch_name, is_clean, is_git_repo
 )
 
 
@@ -62,6 +62,27 @@ class Describe_is_clean(object):
     @pytest.fixture
     def dirty_repo_fixture(self, request, new_test_repo):
         new_test_repo.join('newfile.txt').write('0x984rt\n')
+
+
+class Describe_is_git_repo(object):
+
+    def it_returns_True_in_git_repo(self, inside_repo_fixture):
+        assert is_git_repo() is True
+
+    def it_returns_False_outside_git_repo(self, outside_repo_fixture):
+        assert is_git_repo() is False
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture
+    def inside_repo_fixture(self, request, readonly_test_repo):
+        return
+
+    @pytest.fixture
+    def outside_repo_fixture(self, request, tmpdir):
+        non_repo_dir = tmpdir.mkdir("not-a-git-repo")
+        cwd = non_repo_dir.chdir()
+        request.addfinalizer(lambda: cwd.chdir())
 
 
 # shared fixtures ----------------------------------------------------
