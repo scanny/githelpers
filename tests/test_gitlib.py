@@ -14,8 +14,9 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_names, checkout, current_branch_name,
-    delete_branch, head, is_clean, is_commit, is_git_repo, reset_hard_to
+    branch_exists, branch_hash, branch_names, checkout, create_branch_at,
+    current_branch_name, delete_branch, head, is_clean, is_commit,
+    is_git_repo, reset_hard_to
 )
 
 
@@ -47,6 +48,18 @@ class Describe_checkout(object):
         checkout('master')
         assert bazfoo.check()
         assert current_branch_name() == 'master'
+
+
+class Describe_create_branch_at(object):
+
+    def it_creates_a_new_branch_at_commit_ref(self, new_test_repo):
+        assert not branch_exists('foobar')
+
+        create_branch_at('foobar', '2294d979')
+
+        assert branch_exists('foobar')
+        assert branch_hash('foobar').startswith('2294d979')
+        assert current_branch_name() != 'foobar'
 
 
 class Describe_current_branch_name(object):

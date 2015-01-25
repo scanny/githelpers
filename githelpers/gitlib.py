@@ -20,6 +20,13 @@ def branch_exists(branch_name):
     return return_code_of(cmd) == 0
 
 
+def branch_hash(branch_name):
+    """
+    Return the SHA1 hash of the commit pointed to by *branch_name*.
+    """
+    return output_of(['git', 'rev-parse', branch_name]).strip()
+
+
 def branch_names():
     """
     Return a list containing the branch name of each local branch in this
@@ -41,9 +48,10 @@ def checkout(branch_name):
 
 def create_branch_at(branch_name, commit_ref):
     """
-    Create branch *branch_name* at *commit_ref*.
+    Create branch *branch_name* at *commit_ref*. Does not checkout the new
+    branch. Returns stdout output, but this command is normally silent.
     """
-    raise NotImplementedError
+    return output_of(['git', 'branch', branch_name, commit_ref])
 
 
 def current_branch_name():

@@ -12,7 +12,6 @@ Feature: Reset fixit branch to commit ref
       And HEAD is 28f1215
 
 
-  @wip
   @linear-repo
   Scenario: Checkout new fixit at specified commit
     Given the working directory is a Git repo
@@ -21,7 +20,6 @@ Feature: Reset fixit branch to commit ref
       And HEAD is 1985579
 
 
-  @wip
   Scenario: Reset checked-out fixit to new commit
     Given the working directory is a Git repo
       And the current branch is 'fixit'
@@ -30,7 +28,6 @@ Feature: Reset fixit branch to commit ref
       And HEAD is 28f1215
 
 
-  @wip
   Scenario: Graceful exit when not in Git repository
     Given the working directory is not in a Git repository
      When I issue the command `fix 28f1215`
