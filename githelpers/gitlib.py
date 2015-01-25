@@ -65,7 +65,9 @@ def is_commit(commit_ref):
     Return |True| if *commit_ref* is a valid reference to a commit in this
     repository. |False| otherwise.
     """
-    raise NotImplementedError
+    ref = '%s^{commit}' % commit_ref
+    cmd = ['git', 'rev-parse', '-q', '--verify', '%s' % ref]
+    return return_code_of(cmd) == 0
 
 
 def is_git_repo():

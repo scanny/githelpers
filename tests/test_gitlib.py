@@ -14,7 +14,8 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_names, checkout, current_branch_name, is_clean, is_git_repo
+    branch_names, checkout, current_branch_name, is_clean, is_commit,
+    is_git_repo
 )
 
 
@@ -62,6 +63,27 @@ class Describe_is_clean(object):
     @pytest.fixture
     def dirty_repo_fixture(self, request, new_test_repo):
         new_test_repo.join('newfile.txt').write('0x984rt\n')
+
+
+class Describe_is_commit(object):
+
+    def it_is_True_for_commit(self, valid_sha1_fixture):
+        sha1 = valid_sha1_fixture
+        assert is_commit(sha1) is True
+
+    def it_is_False_for_nonexistent_sha1(self, bad_hash_fixture):
+        sha1 = bad_hash_fixture
+        assert is_commit(sha1) is False
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture
+    def valid_sha1_fixture(self, request, readonly_test_repo):
+        return '6604de21f566378d994a517018a909c078a055bc'
+
+    @pytest.fixture
+    def bad_hash_fixture(self, request, readonly_test_repo):
+        return 'f00ba59999999999999999999999999999999999'
 
 
 class Describe_is_git_repo(object):
