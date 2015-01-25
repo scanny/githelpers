@@ -14,7 +14,10 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import is_clean, is_commit, is_git_repo
+from ..gitlib import (
+    branch_exists, checkout, create_branch_at, current_branch_name, is_clean,
+    is_commit, is_git_repo, reset_hard_to
+)
 
 
 def _exit_if_not_valid_in_context():
@@ -49,7 +52,13 @@ def _checkout_branch_and_reset_to(branch_name, commit_ref):
     Check out *branch_name* and reset it hard to *commit_ref*. Create the
     branch at HEAD it doesn't exist.
     """
-    raise NotImplementedError
+    if not branch_exists(branch_name):
+        create_branch_at(branch_name, 'HEAD')
+
+    if current_branch_name() != branch_name:
+        print(checkout(branch_name))
+
+    print(reset_hard_to(commit_ref))
 
 
 def _fix(commit_ref):

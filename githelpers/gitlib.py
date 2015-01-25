@@ -11,6 +11,14 @@ from __future__ import (
 from .runcmd import output_of, return_code_of
 
 
+def branch_exists(branch_name):
+    """
+    Return |True| if a branch having *branch_name* exists in the current
+    repository. |False| otherwise.
+    """
+    raise NotImplementedError
+
+
 def branch_names():
     """
     Return a list containing the branch name of each local branch in this
@@ -28,6 +36,13 @@ def checkout(branch_name):
     |RunCmdError| if checkout is unsuccessful.
     """
     return output_of(['git', 'checkout', branch_name])
+
+
+def create_branch_at(branch_name, commit_ref):
+    """
+    Create branch *branch_name* at *commit_ref*.
+    """
+    raise NotImplementedError
 
 
 def current_branch_name():
@@ -77,3 +92,11 @@ def is_git_repo():
     """
     cmd = ['git', 'rev-parse', '--git-dir']
     return return_code_of(cmd) == 0
+
+
+def reset_hard_to(commit_ref):
+    """
+    Move the current branch to *commit_ref*, modifying the working tree to
+    match that commit.
+    """
+    raise NotImplementedError
