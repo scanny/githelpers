@@ -64,7 +64,7 @@ def head():
     """
     Return the SHA1 hash of the commit pointed to by 'HEAD'.
     """
-    raise NotImplementedError
+    return output_of(['git', 'rev-parse', 'HEAD']).strip()
 
 
 def is_clean():
@@ -100,4 +100,4 @@ def reset_hard_to(commit_ref):
     Move the current branch to *commit_ref*, modifying the working tree to
     match that commit.
     """
-    raise NotImplementedError
+    return output_of(['git', 'reset', '--hard', commit_ref])

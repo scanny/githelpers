@@ -4,7 +4,6 @@ Feature: Reset fixit branch to commit ref
   I need a way to safely checkout an arbitrary commit with a working ref
 
 
-  @wip
   Scenario: Checkout existing fixit at new commit
     Given the working directory is a Git repo
       And the current branch is 'spike'

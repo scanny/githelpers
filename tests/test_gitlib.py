@@ -14,8 +14,8 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_names, checkout, current_branch_name, is_clean,
-    is_commit, is_git_repo
+    branch_exists, branch_names, checkout, current_branch_name, head,
+    is_clean, is_commit, is_git_repo, reset_hard_to
 )
 
 
@@ -114,6 +114,16 @@ class Describe_is_git_repo(object):
         non_repo_dir = tmpdir.mkdir("not-a-git-repo")
         cwd = non_repo_dir.chdir()
         request.addfinalizer(lambda: cwd.chdir())
+
+
+class Describe_reset_hard_to(object):
+
+    def it_resets_the_commit_and_working_tree(self, new_test_repo):
+        barbaz = new_test_repo.join('barbaz.txt')
+        assert barbaz.check()
+        reset_hard_to('fixit')
+        assert not barbaz.check()
+        assert head() == '0eafe04e11a41374a1bd11f2eb1776d9d44febb1'
 
 
 # shared fixtures ----------------------------------------------------
