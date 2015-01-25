@@ -14,6 +14,7 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
+from ..gitlib import is_clean, is_git_repo
 
 
 def _exit_if_not_valid_in_context():
@@ -21,7 +22,15 @@ def _exit_if_not_valid_in_context():
     Exit with an error message if the current working directory is not in a Git
     repository or if the working directory is dirty. Otherwise, return None.
     """
-    raise NotImplementedError
+    if not is_git_repo():
+        raise ExecutionError(
+            'Not in a Git repository.\nAborting.', 2
+        )
+
+    if not is_clean():
+        raise ExecutionError(
+            'Workspace contains uncommitted changes.\nAborting.', 3
+        )
 
 
 def _exit_if_not_valid(commit_ref):

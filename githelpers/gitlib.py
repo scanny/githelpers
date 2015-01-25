@@ -58,3 +58,11 @@ def is_clean():
     """
     out = output_of(['git', 'status', '--porcelain'])
     return out == ''
+
+
+def is_git_repo():
+    """
+    Return |True| if the current working directory is in a git repository,
+    False otherwise.
+    """
+    raise NotImplementedError
