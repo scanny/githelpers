@@ -16,7 +16,8 @@ def branch_exists(branch_name):
     Return |True| if a branch having *branch_name* exists in the current
     repository. |False| otherwise.
     """
-    raise NotImplementedError
+    cmd = ['git', 'show-ref', '--verify', 'refs/heads/%s' % branch_name]
+    return return_code_of(cmd) == 0
 
 
 def branch_names():

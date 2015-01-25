@@ -14,12 +14,21 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_names, checkout, current_branch_name, is_clean, is_commit,
-    is_git_repo
+    branch_exists, branch_names, checkout, current_branch_name, is_clean,
+    is_commit, is_git_repo
 )
 
 
 TEST_REPO_ZIP = str(py.path.local(__file__).dirpath('test-repo.zip'))
+
+
+class Describe_branch_exists(object):
+
+    def it_is_True_for_existing_branch(self, readonly_test_repo):
+        assert branch_exists('master') is True
+
+    def it_is_False_for_nonexistent_branch(self, readonly_test_repo):
+        assert branch_exists('fzxyed') is False
 
 
 class Describe_branch_names(object):
