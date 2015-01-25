@@ -13,7 +13,9 @@ from zipfile import ZipFile
 import py
 import pytest
 
-from githelpers.gitlib import branch_names, checkout, current_branch_name
+from githelpers.gitlib import (
+    branch_names, checkout, current_branch_name, is_clean
+)
 
 
 TEST_REPO_ZIP = str(py.path.local(__file__).dirpath('test-repo.zip'))
@@ -41,6 +43,25 @@ class Describe_current_branch_name(object):
 
     def it_is_spike_for_test_repo(self, readonly_test_repo):
         assert current_branch_name() == 'spike'
+
+
+class Describe_is_clean(object):
+
+    def it_returns_True_in_clean_repo(self, clean_repo_fixture):
+        assert is_clean() is True
+
+    def it_returns_False_in_dirty_repo(self, dirty_repo_fixture):
+        assert is_clean() is False
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture
+    def clean_repo_fixture(self, request, readonly_test_repo):
+        pass
+
+    @pytest.fixture
+    def dirty_repo_fixture(self, request, new_test_repo):
+        new_test_repo.join('newfile.txt').write('0x984rt\n')
 
 
 # shared fixtures ----------------------------------------------------

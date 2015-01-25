@@ -56,4 +56,5 @@ def is_clean():
     Return |True| if the current working directory has no uncommitted
     changes, otherwise return |False|.
     """
-    raise NotImplementedError
+    out = output_of(['git', 'status', '--porcelain'])
+    return out == ''
