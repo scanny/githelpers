@@ -60,6 +60,14 @@ def is_clean():
     return out == ''
 
 
+def is_commit(commit_ref):
+    """
+    Return |True| if *commit_ref* is a valid reference to a commit in this
+    repository. |False| otherwise.
+    """
+    raise NotImplementedError
+
+
 def is_git_repo():
     """
     Return |True| if the current working directory is in a git repository,

@@ -14,7 +14,7 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import is_clean, is_git_repo
+from ..gitlib import is_clean, is_commit, is_git_repo
 
 
 def _exit_if_not_valid_in_context():
@@ -38,7 +38,10 @@ def _exit_if_not_valid(commit_ref):
     Exit with an error message if *commit_ref* does not identify a commit in
     the repository. Otherwise, return None.
     """
-    raise NotImplementedError
+    if not is_commit(commit_ref):
+        raise ExecutionError(
+            '%s is not a valid commit reference.\nAborting.' % commit_ref, 4
+        )
 
 
 def _checkout_branch_and_reset_to(branch_name, commit_ref):
