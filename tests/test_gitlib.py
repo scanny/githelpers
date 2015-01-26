@@ -13,10 +13,18 @@ from zipfile import ZipFile
 import py
 import pytest
 
-from githelpers.gitlib import checkout, current_branch_name
+from githelpers.gitlib import branch_names, checkout, current_branch_name
 
 
 TEST_REPO_ZIP = str(py.path.local(__file__).dirpath('test-repo.zip'))
+
+
+class Describe_branch_names(object):
+
+    def it_returns_all_the_local_branch_names(self, readonly_test_repo):
+        assert branch_names() == [
+            'feature/foobar', 'fixit', 'master', 'spike'
+        ]
 
 
 class Describe_checkout(object):

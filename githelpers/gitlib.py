@@ -16,7 +16,10 @@ def branch_names():
     Return a list containing the branch name of each local branch in this
     repository.
     """
-    raise NotImplementedError
+    out = output_of(
+        ['git', 'for-each-ref', '--format=%(refname)', 'refs/heads']
+    )
+    return [line[11:] for line in out.splitlines()]
 
 
 def checkout(branch_name):
