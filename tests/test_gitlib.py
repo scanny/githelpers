@@ -14,8 +14,8 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_names, checkout, current_branch_name, head,
-    is_clean, is_commit, is_git_repo, reset_hard_to
+    branch_exists, branch_names, checkout, current_branch_name,
+    delete_branch, head, is_clean, is_commit, is_git_repo, reset_hard_to
 )
 
 
@@ -53,6 +53,18 @@ class Describe_current_branch_name(object):
 
     def it_is_spike_for_test_repo(self, readonly_test_repo):
         assert current_branch_name() == 'spike'
+
+
+class Describe_delete_branch(object):
+
+    def it_removes_a_branch(self, new_test_repo):
+        assert branch_exists('feature/foobar')
+        delete_branch('feature/foobar')
+        assert not branch_exists('feature/foobar')
+
+    def it_raises_on_delete_current_branch(self, new_test_repo):
+        with pytest.raises(ValueError):
+            delete_branch('spike')
 
 
 class Describe_is_clean(object):

@@ -57,7 +57,9 @@ def delete_branch(branch_name):
     """
     Delete the reference refs/heads/{*branch_name*}.
     """
-    raise NotImplementedError
+    if branch_name == current_branch_name():
+        raise ValueError('Cannot delete current branch \'%s\'' % branch_name)
+    return output_of(['git', 'branch', '-D', branch_name])
 
 
 def head():
