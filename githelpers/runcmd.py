@@ -8,10 +8,10 @@ from __future__ import (
     absolute_import, division, print_function, unicode_literals
 )
 
-from subprocess import PIPE, Popen, SubprocessError
+from subprocess import PIPE, Popen
 
 
-class RunCmdError(SubprocessError):
+class RunCmdError(Exception):
     """
     Base class for exceptions in `runcmd` module.
     """

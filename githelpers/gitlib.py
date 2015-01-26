@@ -8,6 +8,8 @@ from __future__ import (
     absolute_import, division, print_function, unicode_literals
 )
 
+from .runcmd import output_of
+
 
 def branch_names():
     """
@@ -28,7 +30,7 @@ def current_branch_name():
     """
     Return the current branch name, or 'HEAD' if in detached head state.
     """
-    raise NotImplementedError
+    return output_of(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
 
 def delete_branch(branch_name):

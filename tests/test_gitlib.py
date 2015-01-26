@@ -13,8 +13,16 @@ from zipfile import ZipFile
 import py
 import pytest
 
+from githelpers.gitlib import current_branch_name
+
 
 TEST_REPO_ZIP = str(py.path.local(__file__).dirpath('test-repo.zip'))
+
+
+class Describe_current_branch_name(object):
+
+    def it_is_spike_for_test_repo(self, readonly_test_repo):
+        assert current_branch_name() == 'spike'
 
 
 # shared fixtures ----------------------------------------------------
