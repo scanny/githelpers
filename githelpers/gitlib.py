@@ -21,9 +21,10 @@ def branch_names():
 
 def checkout(branch_name):
     """
-    Checkout branch having *branch_name*.
+    Checkout branch having *branch_name*. Returns stdout output. Raises
+    |RunCmdError| if checkout is unsuccessful.
     """
-    raise NotImplementedError
+    return output_of(['git', 'checkout', branch_name])
 
 
 def current_branch_name():

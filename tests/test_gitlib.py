@@ -13,10 +13,20 @@ from zipfile import ZipFile
 import py
 import pytest
 
-from githelpers.gitlib import current_branch_name
+from githelpers.gitlib import checkout, current_branch_name
 
 
 TEST_REPO_ZIP = str(py.path.local(__file__).dirpath('test-repo.zip'))
+
+
+class Describe_checkout(object):
+
+    def it_checks_out_a_branch(self, new_test_repo):
+        bazfoo = new_test_repo.join('bazfoo.txt')
+        assert not bazfoo.check()
+        checkout('master')
+        assert bazfoo.check()
+        assert current_branch_name() == 'master'
 
 
 class Describe_current_branch_name(object):
