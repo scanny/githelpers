@@ -13,6 +13,25 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
+from ..gitlib import reset_hard_to
+
+
+def _exit_if_not_valid_in_context():
+    """
+    Exit with return code 2 if the current working directory is not in a Git
+    repository or return code 3 if the working directory is dirty. Otherwise,
+    return None.
+    """
+    pass
+
+
+def _child():
+    """
+    Return the SHA1 hash of the single child commit of HEAD. Exit with return
+    code 4 if there is no child commit (HEAD is at the "tip" of a branch).
+    Exit with return code 5 if HEAD has more than one child commit.
+    """
+    raise NotImplementedError
 
 
 def _next():
@@ -21,7 +40,8 @@ def _next():
     error message if there is not exactly one direct child or if changes in
     the working directory would be lost.
     """
-    raise NotImplementedError
+    _exit_if_not_valid_in_context()
+    reset_hard_to(_child())
 
 
 def main():
