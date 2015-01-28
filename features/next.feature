@@ -12,7 +12,6 @@ Feature: Move current branch "upward" to "next" (child) commit
       And HEAD is 36c9fec
 
 
-  @wip
   Scenario: Error exit when not in Git repository
     Given the working directory is not in a Git repository
      When I issue the command `next`
@@ -20,7 +19,6 @@ Feature: Move current branch "upward" to "next" (child) commit
       And stderr output starts with 'Not in a Git repository.'
 
 
-  @wip
   Scenario: Error exit when working tree is dirty
     Given the working directory is a Git repo
       And the current branch is 'fixit'

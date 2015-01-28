@@ -13,7 +13,7 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import children_of_head, reset_hard_to
+from ..gitlib import children_of_head, is_clean, is_git_repo, reset_hard_to
 
 
 def _exit_if_not_valid_in_context():
@@ -22,7 +22,15 @@ def _exit_if_not_valid_in_context():
     repository or return code 3 if the working directory is dirty. Otherwise,
     return None.
     """
-    pass
+    if not is_git_repo():
+        raise ExecutionError(
+            'Not in a Git repository.\nAborting.', 2
+        )
+
+    if not is_clean():
+        raise ExecutionError(
+            'Workspace contains uncommitted changes.\nAborting.', 3
+        )
 
 
 def _child():
