@@ -50,7 +50,12 @@ def children_of_head():
     """
     Return a list containing the SHA1 hash for each child commit of HEAD.
     """
-    raise NotImplementedError
+    out = output_of(['git', 'rev-list', '--all', '--children'])
+    head_sha1 = head()
+    for line in out.splitlines():
+        if line.startswith(head_sha1):
+            return line.split()[1:]
+    raise Exception('HEAD not found in rev-list output')
 
 
 def create_branch_at(branch_name, commit_ref):

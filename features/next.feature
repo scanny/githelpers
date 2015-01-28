@@ -4,7 +4,6 @@ Feature: Move current branch "upward" to "next" (child) commit
   I need a way to move the current branch upward, one commit at a time
 
 
-  @wip
   Scenario: Move current branch up one commit
     Given the working directory is a Git repo
       And the current branch is 'fixit'

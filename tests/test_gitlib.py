@@ -14,9 +14,9 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_hash, branch_names, checkout, create_branch_at,
-    current_branch_name, delete_branch, head, is_clean, is_commit,
-    is_git_repo, reset_hard_to
+    branch_exists, branch_hash, branch_names, checkout, children_of_head,
+    create_branch_at, current_branch_name, delete_branch, head, is_clean,
+    is_commit, is_git_repo, reset_hard_to
 )
 
 
@@ -48,6 +48,27 @@ class Describe_checkout(object):
         checkout('master')
         assert bazfoo.check()
         assert current_branch_name() == 'master'
+
+
+class Describe_children_of_head(object):
+
+    def it_returns_the_child_commit_hashes(self, call_fixture):
+        expected_value = call_fixture
+        hashes = children_of_head()
+        assert hashes == expected_value
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(params=[
+        ('spike',   []),
+        ('fixit',   ['6604de21f566378d994a517018a909c078a055bc']),
+        ('99ec480', ['27caec118c2fa2a11b481a02e68a214a64cb3e87',
+                     '2294d9797588a8a0f6aa95ef488cf872b36f2131']),
+    ])
+    def call_fixture(self, request, new_test_repo):
+        commit_ish, hashes = request.param
+        checkout(commit_ish)
+        return hashes
 
 
 class Describe_create_branch_at(object):
