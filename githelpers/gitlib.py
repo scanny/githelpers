@@ -46,6 +46,13 @@ def checkout(branch_name):
     return output_of(['git', 'checkout', branch_name])
 
 
+def children_of_head():
+    """
+    Return a list containing the SHA1 hash for each child commit of HEAD.
+    """
+    raise NotImplementedError
+
+
 def create_branch_at(branch_name, commit_ref):
     """
     Create branch *branch_name* at *commit_ref*. Does not checkout the new

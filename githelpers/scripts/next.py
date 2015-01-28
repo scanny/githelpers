@@ -13,7 +13,7 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import reset_hard_to
+from ..gitlib import children_of_head, reset_hard_to
 
 
 def _exit_if_not_valid_in_context():
@@ -31,7 +31,8 @@ def _child():
     code 4 if there is no child commit (HEAD is at the "tip" of a branch).
     Exit with return code 5 if HEAD has more than one child commit.
     """
-    raise NotImplementedError
+    child_sha1s = children_of_head()
+    return child_sha1s[0]
 
 
 def _next():
