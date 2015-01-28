@@ -37,6 +37,7 @@ PACKAGES = [MAIN_PKG, 'githelpers.scripts']
 ENTRY_POINTS = {
     'console_scripts': [
         'fix = githelpers.scripts.fix:main',
+        'next = githelpers.scripts.next:main',
     ]
 }
 
