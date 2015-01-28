@@ -40,6 +40,17 @@ def _child():
     Exit with return code 5 if HEAD has more than one child commit.
     """
     child_sha1s = children_of_head()
+
+    if len(child_sha1s) == 0:
+        raise ExecutionError(
+            'No next commit.\a', 4
+        )
+
+    if len(child_sha1s) > 1:
+        raise ExecutionError(
+            'More than one child.\nAborting.\a', 5
+        )
+
     return child_sha1s[0]
 
 

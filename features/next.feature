@@ -28,7 +28,6 @@ Feature: Move current branch "upward" to "next" (child) commit
       And stderr output starts with 'Workspace contains uncommitted'
 
 
-  @wip
   Scenario: Error exit on no child
     Given the working directory is a Git repo
       And the current branch is 'spike'
@@ -37,11 +36,10 @@ Feature: Move current branch "upward" to "next" (child) commit
       And stderr output starts with 'No next commit.'
 
 
-  @wip
   Scenario: Error exit on more than one child
     Given the working directory is a Git repo
       And the current branch is 'fixit'
-      And the current commit is 99ec480
+      And the current commit is bb695ff
      When I issue the command `next`
      Then the return code is 5
       And stderr output starts with 'More than one child.'
