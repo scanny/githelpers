@@ -11,8 +11,11 @@ from __future__ import (
 from behave import given, then, when
 
 import githelpers.scripts.fix as fix
+import githelpers.scripts.next as next
 
-from githelpers.gitlib import checkout, current_branch_name, head
+from githelpers.gitlib import (
+    checkout, current_branch_name, head, reset_hard_to
+)
 
 
 # given ===================================================
@@ -21,6 +24,11 @@ from githelpers.gitlib import checkout, current_branch_name, head
 def given_the_current_branch_is_branch_name(context, branch_name):
     if current_branch_name() != branch_name:
         checkout(branch_name)
+
+
+@given('the current commit is {sha1}')
+def given_the_current_commit_is_sha1(context, sha1):
+    reset_hard_to(sha1)
 
 
 @given('the working directory is a Git repo')
@@ -33,12 +41,23 @@ def given_the_cwd_is_not_in_a_Git_repository(context):
     context.empty_dir.chdir()
 
 
+@given('the working tree is not clean')
+def given_the_working_tree_is_not_clean(context):
+    with open('barbaz.txt', 'w') as f:
+        f.write('barbazzle\n')
+
+
 # when ====================================================
 
 @when('I issue the command `fix {commit_ish}`')
 def when_I_issue_the_command_fix_commit_ish(context, commit_ish):
     rc = fix.main(['behave-fix', commit_ish])
     context.return_code = rc
+
+
+@when('I issue the command `next`')
+def when_I_issue_the_command_next(context):
+    context.return_code = next.main()
 
 
 # then ====================================================
