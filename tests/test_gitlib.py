@@ -16,8 +16,8 @@ import pytest
 from githelpers.gitlib import (
     branch_exists, branch_hash, branch_hashes, branch_names, checkout,
     children_of_head, create_branch_at, current_branch_name, delete_branch,
-    head, independent_branch_hashes, is_clean, is_commit, is_git_repo,
-    parent_revs_of, reset_hard_to
+    head, head_is_independent, independent_branch_hashes, is_clean,
+    is_commit, is_git_repo, parent_revs_of, reset_hard_to
 )
 
 
@@ -119,6 +119,26 @@ class Describe_delete_branch(object):
     def it_raises_on_delete_current_branch(self, new_test_repo):
         with pytest.raises(ValueError):
             delete_branch('spike')
+
+
+class Describe_head_is_independent(object):
+
+    def it_knows_whether_current_branch_is_independent(self, call_fixture):
+        expected_value = call_fixture
+        assert head_is_independent() == expected_value
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(params=[
+        ('spike',          True),
+        ('master',         True),
+        ('feature/foobar', False),
+        ('fixit',          False),
+    ])
+    def call_fixture(self, request, new_test_repo):
+        branch_name, expected_value = request.param
+        checkout(branch_name)
+        return expected_value
 
 
 class Describe_independent_branch_hashes(object):

@@ -113,7 +113,7 @@ def head_is_independent():
     current branch pointer was moved "downward" to the parent commit. |False|
     otherwise.
     """
-    raise NotImplementedError
+    return head() in independent_branch_hashes()
 
 
 def independent_branch_hashes():
