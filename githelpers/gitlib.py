@@ -116,6 +116,18 @@ def head_is_independent():
     raise NotImplementedError
 
 
+def independent_branch_hashes():
+    """
+    Return a list containing the SHA1 hash for each local branch that cannot
+    be reached from another branch. Conceptually, an independent branch is
+    a commit graph "tip" that has only one branch reference.
+    """
+    out = output_of(
+        ['git', 'show-branch', '--independent'] + branch_hashes()
+    )
+    return [line for line in out.splitlines()]
+
+
 def is_clean():
     """
     Return |True| if the current working directory has no uncommitted
