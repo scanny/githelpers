@@ -14,9 +14,9 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_hash, branch_names, checkout, children_of_head,
-    create_branch_at, current_branch_name, delete_branch, head, is_clean,
-    is_commit, is_git_repo, parent_revs_of, reset_hard_to
+    branch_exists, branch_hash, branch_hashes, branch_names, checkout,
+    children_of_head, create_branch_at, current_branch_name, delete_branch,
+    head, is_clean, is_commit, is_git_repo, parent_revs_of, reset_hard_to
 )
 
 
@@ -30,6 +30,25 @@ class Describe_branch_exists(object):
 
     def it_is_False_for_nonexistent_branch(self, readonly_test_repo):
         assert branch_exists('fzxyed') is False
+
+
+class Describe_branch_hashes(object):
+
+    def it_returns_a_hash_for_each_branch(self, call_fixture):
+        expected_value = call_fixture
+        hashes = branch_hashes()
+        assert hashes == expected_value
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture
+    def call_fixture(self, readonly_test_repo):
+        return [
+            '27caec118c2fa2a11b481a02e68a214a64cb3e87',
+            '0eafe04e11a41374a1bd11f2eb1776d9d44febb1',
+            '53a12abad9779cd3c4b02b83df01af9c01ed28b4',
+            '2294d9797588a8a0f6aa95ef488cf872b36f2131',
+        ]
 
 
 class Describe_branch_names(object):

@@ -27,6 +27,15 @@ def branch_hash(branch_name):
     return output_of(['git', 'rev-parse', branch_name]).strip()
 
 
+def branch_hashes():
+    """
+    Return a list containing the SHA1 hash for each of the local branches in
+    this repository.
+    """
+    out = output_of(['git', 'show-ref', '--heads', '--hash'])
+    return [line for line in out.splitlines()]
+
+
 def branch_names():
     """
     Return a list containing the branch name of each local branch in this
