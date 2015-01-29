@@ -82,6 +82,15 @@ def delete_branch(branch_name):
     return output_of(['git', 'branch', '-D', branch_name])
 
 
+def full_hash_of(commit_ish):
+    """
+    Return the full 40-character SHA1 hash digest of the commit identified by
+    *commit_ish*. Raises |RunCmdError| if *commit_ish* does not correspond to
+    a revision in the repository.
+    """
+    return output_of(['git', 'rev-parse', commit_ish]).strip()
+
+
 def head():
     """
     Return the SHA1 hash of the commit pointed to by 'HEAD'.
@@ -122,7 +131,9 @@ def parent_revs_of(commitish):
     Return a list containing the SHA1 hash of each commit that is a parent of
     *commitish*.
     """
-    raise NotImplementedError
+    rev = full_hash_of(commitish)
+    parents_spec = '%s^@' % rev
+    return output_of(['git', 'rev-parse', parents_spec]).split()
 
 
 def reset_hard_to(commit_ref):

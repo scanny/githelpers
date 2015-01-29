@@ -16,7 +16,7 @@ import pytest
 from githelpers.gitlib import (
     branch_exists, branch_hash, branch_names, checkout, children_of_head,
     create_branch_at, current_branch_name, delete_branch, head, is_clean,
-    is_commit, is_git_repo, reset_hard_to
+    is_commit, is_git_repo, parent_revs_of, reset_hard_to
 )
 
 
@@ -160,6 +160,26 @@ class Describe_is_git_repo(object):
         non_repo_dir = tmpdir.mkdir("not-a-git-repo")
         cwd = non_repo_dir.chdir()
         request.addfinalizer(lambda: cwd.chdir())
+
+
+class Describe_parent_revs_of(object):
+
+    def it_returns_a_hash_for_each_parent_commit(self, call_fixture):
+        commitish, expected_value = call_fixture
+        revs = parent_revs_of(commitish)
+        assert revs == expected_value
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(params=[
+        ('spike',  ['99ec48014b47dc9f9cfe6fd325b281dbaed12d3f']),
+        ('fixit',  []),
+        ('master', ['27caec118c2fa2a11b481a02e68a214a64cb3e87']),
+        ('HEAD',   ['99ec48014b47dc9f9cfe6fd325b281dbaed12d3f']),
+    ])
+    def call_fixture(self, request, new_test_repo):
+        commitish, revs = request.param
+        return commitish, revs
 
 
 class Describe_reset_hard_to(object):

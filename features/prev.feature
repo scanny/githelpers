@@ -4,7 +4,6 @@ Feature: Move current branch "downward" to parent commit
   I need a way to move the current branch downward, one commit at a time
 
 
-  @wip
   Scenario: Move current branch down one commit
     Given the working directory is a Git repo
       And the current branch is 'fixit'
@@ -39,7 +38,6 @@ Feature: Move current branch "downward" to parent commit
       And stderr output starts with 'Current commit would become unreachable'
 
 
-  @wip
   Scenario: Error exit on no parent commit
     Given the working directory is a Git repo
       And the current branch is 'root'
