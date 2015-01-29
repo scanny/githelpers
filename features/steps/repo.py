@@ -12,6 +12,7 @@ from behave import given, then, when
 
 import githelpers.scripts.fix as fix
 import githelpers.scripts.next as next
+import githelpers.scripts.prev as prev
 
 from githelpers.gitlib import (
     checkout, current_branch_name, head, reset_hard_to
@@ -58,6 +59,11 @@ def when_I_issue_the_command_fix_commit_ish(context, commit_ish):
 @when('I issue the command `next`')
 def when_I_issue_the_command_next(context):
     context.return_code = next.main()
+
+
+@when('I issue the command `prev`')
+def when_I_issue_the_command_prev(context):
+    context.return_code = prev.main()
 
 
 # then ====================================================
