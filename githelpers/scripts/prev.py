@@ -13,6 +13,25 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
+from ..gitlib import reset_hard_to
+
+
+def _exit_if_not_valid_in_context():
+    """
+    Exit with an error message if the current working directory is not in
+    a Git repository, the working directory is dirty, or the current branch
+    is independent. Otherwise, return |None|.
+    """
+    pass
+
+
+def _parent():
+    """
+    Return the SHA1 hash of the first parent commit of HEAD. Exit with an
+    error message if there is no parent commit (i.e. HEAD is an initial
+    commit).
+    """
+    raise NotImplementedError
 
 
 def _prev():
@@ -21,7 +40,8 @@ def _prev():
     error message if changes in the working directory would be lost or if the
     current commit would no longer be reachable.
     """
-    raise NotImplementedError
+    _exit_if_not_valid_in_context()
+    reset_hard_to(_parent())
 
 
 def main():
