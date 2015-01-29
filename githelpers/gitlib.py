@@ -98,6 +98,15 @@ def head():
     return output_of(['git', 'rev-parse', 'HEAD']).strip()
 
 
+def head_is_independent():
+    """
+    Return |True| if the current commit would become unreachable if the
+    current branch pointer was moved "downward" to the parent commit. |False|
+    otherwise.
+    """
+    raise NotImplementedError
+
+
 def is_clean():
     """
     Return |True| if the current working directory has no uncommitted

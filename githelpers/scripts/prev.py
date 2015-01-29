@@ -13,7 +13,9 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import parent_revs_of, reset_hard_to
+from ..gitlib import (
+    head_is_independent, is_clean, is_git_repo, parent_revs_of, reset_hard_to
+)
 
 
 def _exit_if_not_valid_in_context():
@@ -22,7 +24,20 @@ def _exit_if_not_valid_in_context():
     a Git repository, the working directory is dirty, or the current branch
     is independent. Otherwise, return |None|.
     """
-    pass
+    if not is_git_repo():
+        raise ExecutionError(
+            'Not in a Git repository.\nAborting.', 2
+        )
+
+    if not is_clean():
+        raise ExecutionError(
+            'Workspace contains uncommitted changes.\nAborting.\a', 3
+        )
+
+    if head_is_independent():
+        raise ExecutionError(
+            'Current commit would become unreachable\nAborting.\a', 4
+        )
 
 
 def _parent():
