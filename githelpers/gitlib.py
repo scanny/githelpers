@@ -117,6 +117,14 @@ def is_git_repo():
     return return_code_of(cmd) == 0
 
 
+def parent_revs_of(commitish):
+    """
+    Return a list containing the SHA1 hash of each commit that is a parent of
+    *commitish*.
+    """
+    raise NotImplementedError
+
+
 def reset_hard_to(commit_ref):
     """
     Move the current branch to *commit_ref*, modifying the working tree to

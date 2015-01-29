@@ -13,7 +13,7 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import reset_hard_to
+from ..gitlib import parent_revs_of, reset_hard_to
 
 
 def _exit_if_not_valid_in_context():
@@ -31,7 +31,10 @@ def _parent():
     error message if there is no parent commit (i.e. HEAD is an initial
     commit).
     """
-    raise NotImplementedError
+    parents = parent_revs_of('HEAD')
+    if not parents:
+        raise ExecutionError('No parent commit.\nAborting.\a', 5)
+    return parents[0]
 
 
 def _prev():
