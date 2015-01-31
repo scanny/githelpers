@@ -182,6 +182,14 @@ def reachable_revs():
     return output_of(['git', 'rev-list', '--all']).split()
 
 
+def rebase_onto(newbase, fork_point, branch_name):
+    """
+    Rebase *branch_name* onto *newbase* up to but not including the commit at
+    *fork_point*.
+    """
+    raise NotImplementedError
+
+
 def reset_hard_to(commit_ref):
     """
     Move the current branch to *commit_ref*, modifying the working tree to

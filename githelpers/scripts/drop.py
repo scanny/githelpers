@@ -13,6 +13,41 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
+from ..gitlib import checkout, current_branch_name, rebase_onto
+
+
+def _exit_if_not_valid_in_context():
+    """
+    Exit with an error message if the current working directory is not in
+    a Git repository, the working directory is dirty, or the current branch
+    is independent.
+    """
+    pass
+
+
+def _only_branch_containing(commitish):
+    """
+    Return the name of the branch containing *commitish*. Exit with an error
+    message if *commitish* can be reached from other than exactly one branch.
+    """
+    raise NotImplementedError
+
+
+def _resolve_rev(commitish):
+    """
+    Return the 40 character SHA1 hash for *committish*. Exit with an error
+    message if *commitish* does not resolve to a reachable commit in the
+    repository.
+    """
+    raise NotImplementedError
+
+
+def _single_parent_of(commitish):
+    """
+    Return the SHA1 hash of the single parent of *commitish*. Exit with an
+    error message if there is other than a single parent.
+    """
+    raise NotImplementedError
 
 
 def _drop(commitish_to_drop):
@@ -21,7 +56,17 @@ def _drop(commitish_to_drop):
     if *commitish_to_drop* is reachable from more than one branch or has
     other than exactly one parent.
     """
-    raise NotImplementedError
+    _exit_if_not_valid_in_context()
+
+    rev_to_drop = _resolve_rev(commitish_to_drop)
+    orig_branch = current_branch_name()
+    commit_branch = _only_branch_containing(commitish_to_drop)
+    newbase = _single_parent_of(commitish_to_drop)
+
+    print(rebase_onto(newbase, rev_to_drop, commit_branch))
+
+    if current_branch_name() != orig_branch and orig_branch != 'HEAD':
+        checkout(orig_branch)
 
 
 def main(argv=None):
