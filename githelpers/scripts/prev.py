@@ -59,7 +59,7 @@ def _prev():
     current commit would no longer be reachable.
     """
     _exit_if_not_valid_in_context()
-    reset_hard_to(_parent())
+    print(reset_hard_to(_parent()), end='')
 
 
 def main():

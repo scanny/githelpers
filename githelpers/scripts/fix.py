@@ -56,9 +56,9 @@ def _checkout_branch_and_reset_to(branch_name, commit_ref):
         create_branch_at(branch_name, 'HEAD')
 
     if current_branch_name() != branch_name:
-        print(checkout(branch_name))
+        print(checkout(branch_name), end='')
 
-    print(reset_hard_to(commit_ref))
+    print(reset_hard_to(commit_ref), end='')
 
 
 def _fix(commit_ref):

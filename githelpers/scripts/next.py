@@ -61,7 +61,7 @@ def _next():
     the working directory would be lost.
     """
     _exit_if_not_valid_in_context()
-    reset_hard_to(_child())
+    print(reset_hard_to(_child()), end='')
 
 
 def main():
