@@ -31,7 +31,6 @@ Feature: Drop a commit from revision history
       And stderr output starts with 'Workspace contains uncommitted'
 
 
-  @wip
   Scenario: Error exit on commit not reachable
     Given the working directory is a Git repo
      When I issue the command `drop f00beef`

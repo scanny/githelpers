@@ -13,7 +13,10 @@ from __future__ import (
 import sys
 
 from .exceptions import ExecutionError
-from ..gitlib import checkout, current_branch_name, rebase_onto
+from ..gitlib import (
+    checkout, current_branch_name, full_hash_of, is_reachable, rebase_onto,
+    RunCmdError
+)
 
 
 def _exit_if_not_valid_in_context():
@@ -39,7 +42,19 @@ def _resolve_rev(commitish):
     message if *commitish* does not resolve to a reachable commit in the
     repository.
     """
-    raise NotImplementedError
+    try:
+        rev = full_hash_of(commitish)
+    except RunCmdError:
+        raise ExecutionError(
+            'Unknown revision %s.\a' % commitish, 4
+        )
+
+    if not is_reachable(rev):
+        raise ExecutionError(
+            '%s is not a reachable commit.\nAborting.\a' % commitish, 4
+        )
+
+    return rev
 
 
 def _single_parent_of(commitish):

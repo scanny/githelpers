@@ -9,6 +9,7 @@ from __future__ import (
 )
 
 from .runcmd import output_of, return_code_of
+from .runcmd import RunCmdError  # noqa
 
 
 def branch_exists(branch_name):
