@@ -15,7 +15,8 @@ import sys
 from .exceptions import ExecutionError
 from ..gitlib import (
     branches_containing, checkout, current_branch_name, full_hash_of,
-    is_reachable, parent_revs_of, rebase_onto, RunCmdError
+    is_clean, is_git_repo, is_reachable, parent_revs_of, rebase_onto,
+    RunCmdError
 )
 
 
@@ -25,7 +26,15 @@ def _exit_if_not_valid_in_context():
     a Git repository, the working directory is dirty, or the current branch
     is independent.
     """
-    pass
+    if not is_git_repo():
+        raise ExecutionError(
+            'Not in a Git repository.\nAborting.', 2
+        )
+
+    if not is_clean():
+        raise ExecutionError(
+            'Workspace contains uncommitted changes.\nAborting.\a', 3
+        )
 
 
 def _only_branch_containing(commitish):

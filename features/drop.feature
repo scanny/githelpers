@@ -13,7 +13,6 @@ Feature: Drop a commit from revision history
       And the current branch is 'fixit'
 
 
-  @wip
   Scenario: Error exit when not in Git repository
     Given the working directory is not in a Git repository
      When I issue the command `drop c4b6209`
@@ -21,7 +20,6 @@ Feature: Drop a commit from revision history
       And stderr output starts with 'Not in a Git repository.'
 
 
-  @wip
   Scenario: Error exit when working tree is dirty
     Given the working directory is a Git repo
       But the working tree is not clean
