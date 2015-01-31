@@ -14,8 +14,8 @@ import sys
 
 from .exceptions import ExecutionError
 from ..gitlib import (
-    checkout, current_branch_name, full_hash_of, is_reachable, rebase_onto,
-    RunCmdError
+    branches_containing, checkout, current_branch_name, full_hash_of,
+    is_reachable, rebase_onto, RunCmdError
 )
 
 
@@ -33,7 +33,16 @@ def _only_branch_containing(commitish):
     Return the name of the branch containing *commitish*. Exit with an error
     message if *commitish* can be reached from other than exactly one branch.
     """
-    raise NotImplementedError
+    branch_names = branches_containing(commitish)
+    branch_count = len(branch_names)
+
+    if branch_count > 1:
+        raise ExecutionError(
+            'Commit %s reachable from more than one branch.\n'
+            'Aborting.' % commitish, 5
+        )
+
+    return branch_names[0]
 
 
 def _resolve_rev(commitish):

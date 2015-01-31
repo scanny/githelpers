@@ -48,6 +48,14 @@ def branch_names():
     return [line[11:] for line in out.splitlines()]
 
 
+def branches_containing(commitish):
+    """
+    Return a list containing the name of each local branch from which
+    *commitish* is reachable.
+    """
+    raise NotImplementedError
+
+
 def checkout(branch_name):
     """
     Checkout branch having *branch_name*. Returns stdout output. Raises
