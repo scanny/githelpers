@@ -197,7 +197,9 @@ def rebase_onto(newbase, fork_point, branch_name):
     Rebase *branch_name* onto *newbase* up to but not including the commit at
     *fork_point*.
     """
-    raise NotImplementedError
+    return output_of(
+        ['git', 'rebase', '--onto', newbase, fork_point, branch_name]
+    ).rstrip()
 
 
 def reset_hard_to(commit_ref):

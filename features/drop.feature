@@ -4,7 +4,6 @@ Feature: Drop a commit from revision history
   I need a way to drop a single commit
 
 
-  @wip
   Scenario: Drop a mid-branch commit
     Given the working directory is a Git repo
       And the current branch is 'fixit'
