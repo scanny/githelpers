@@ -45,7 +45,6 @@ Feature: Drop a commit from revision history
       And stderr output starts with 'Commit 36c9fec reachable from more than'
 
 
-  @wip
   @linear-repo
   Scenario: Error exit on commit has no parent
     Given the working directory is a Git repo
@@ -54,7 +53,6 @@ Feature: Drop a commit from revision history
       And stderr output starts with 'Commit 1985579 has no parent.'
 
 
-  @wip
   Scenario: Error exit on commit has more than one parent
     Given the working directory is a Git repo
      When I issue the command `drop f67ea7e`

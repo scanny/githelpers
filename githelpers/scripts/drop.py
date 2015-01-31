@@ -15,7 +15,7 @@ import sys
 from .exceptions import ExecutionError
 from ..gitlib import (
     branches_containing, checkout, current_branch_name, full_hash_of,
-    is_reachable, rebase_onto, RunCmdError
+    is_reachable, parent_revs_of, rebase_onto, RunCmdError
 )
 
 
@@ -71,7 +71,20 @@ def _single_parent_of(commitish):
     Return the SHA1 hash of the single parent of *commitish*. Exit with an
     error message if there is other than a single parent.
     """
-    raise NotImplementedError
+    parent_revs = parent_revs_of(commitish)
+    parent_rev_count = len(parent_revs)
+
+    if parent_rev_count == 0:
+        raise ExecutionError(
+            'Commit %s has no parent.\nAborting.\a' % commitish, 6
+        )
+
+    if parent_rev_count > 1:
+        raise ExecutionError(
+            'Commit %s has more than one parent.\nAborting.' % commitish, 7
+        )
+
+    return parent_revs[0]
 
 
 def _drop(commitish_to_drop):
