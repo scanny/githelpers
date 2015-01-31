@@ -156,6 +156,14 @@ def is_git_repo():
     return return_code_of(cmd) == 0
 
 
+def is_reachable(commitish):
+    """
+    Return |True| if the commit idenfied by *commitish* is reachable from at
+    least one branch.
+    """
+    return full_hash_of(commitish) in reachable_revs()
+
+
 def parent_revs_of(commitish):
     """
     Return a list containing the SHA1 hash of each commit that is a parent of
@@ -164,6 +172,14 @@ def parent_revs_of(commitish):
     rev = full_hash_of(commitish)
     parents_spec = '%s^@' % rev
     return output_of(['git', 'rev-parse', parents_spec]).split()
+
+
+def reachable_revs():
+    """
+    Return a list of revs corresponding to the commits that can be reached
+    from one of the repository refs, including local, remote, and tag refs.
+    """
+    return output_of(['git', 'rev-list', '--all']).split()
 
 
 def reset_hard_to(commit_ref):

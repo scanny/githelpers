@@ -13,13 +13,19 @@ from behave import given, then, when
 import githelpers.scripts.fix as fix
 import githelpers.scripts.next as next
 import githelpers.scripts.prev as prev
+import githelpers.scripts.drop as drop
 
 from githelpers.gitlib import (
-    checkout, current_branch_name, head, reset_hard_to
+    checkout, current_branch_name, head, is_reachable, reset_hard_to
 )
 
 
 # given ===================================================
+
+@given('rev {abbrev} is reachable')
+def given_rev_abbrev_is_reachable(context, abbrev):
+    assert is_reachable(abbrev)
+
 
 @given('the current branch is \'{branch_name}\'')
 def given_the_current_branch_is_branch_name(context, branch_name):
@@ -66,11 +72,22 @@ def when_I_issue_the_command_prev(context):
     context.return_code = prev.main()
 
 
+@when('I issue the command `drop {abbrev}`')
+def when_I_issue_the_command_drop_abbrev(context, abbrev):
+    rc = drop.main(['behave-drop', abbrev])
+    context.return_code = rc
+
+
 # then ====================================================
 
 @then('HEAD is {abbrev_hash}')
 def then_HEAD_is_abbrev_hash(context, abbrev_hash):
     assert head().startswith(abbrev_hash)
+
+
+@then('rev {abbrev} is not reachable')
+def then_rev_abbrev_is_not_reachable(context, abbrev):
+    assert not is_reachable(abbrev)
 
 
 @then('the current branch is \'{branch_name}\'')
