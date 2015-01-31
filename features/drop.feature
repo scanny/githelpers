@@ -38,7 +38,6 @@ Feature: Drop a commit from revision history
       And stderr output starts with 'Unknown revision f00beef.'
 
 
-  @wip
   Scenario: Error exit on commit reachable from more than one ref
     Given the working directory is a Git repo
      When I issue the command `drop 36c9fec`

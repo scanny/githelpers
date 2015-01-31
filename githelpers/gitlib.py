@@ -53,7 +53,8 @@ def branches_containing(commitish):
     Return a list containing the name of each local branch from which
     *commitish* is reachable.
     """
-    raise NotImplementedError
+    rev = full_hash_of(commitish)
+    return [name for name in branch_names() if rev in rev_list(name)]
 
 
 def checkout(branch_name):
@@ -205,3 +206,11 @@ def reset_hard_to(commit_ref):
     match that commit.
     """
     return output_of(['git', 'reset', '--hard', commit_ref])
+
+
+def rev_list(commitish):
+    """
+    Return a list containing the SHA1 hash of each commit reachable from
+    *commitish*.
+    """
+    return output_of(['git', 'rev-list', commitish]).split()

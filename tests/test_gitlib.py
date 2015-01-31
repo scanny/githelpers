@@ -14,10 +14,11 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_hash, branch_hashes, branch_names, checkout,
-    children_of_head, create_branch_at, current_branch_name, delete_branch,
-    head, head_is_independent, independent_branch_hashes, is_clean,
-    is_commit, is_git_repo, parent_revs_of, reset_hard_to
+    branch_exists, branch_hash, branch_hashes, branch_names,
+    branches_containing, checkout, children_of_head, create_branch_at,
+    current_branch_name, delete_branch, head, head_is_independent,
+    independent_branch_hashes, is_clean, is_commit, is_git_repo,
+    parent_revs_of, reset_hard_to
 )
 
 
@@ -58,6 +59,26 @@ class Describe_branch_names(object):
         assert branch_names() == [
             'feature/foobar', 'fixit', 'master', 'spike'
         ]
+
+
+class Describe_branches_containing(object):
+
+    def it_returns_branch_names_containing_commitish(self, call_fixture):
+        commitish, expected_value = call_fixture
+        branch_names = branches_containing(commitish)
+        assert branch_names == expected_value
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(params=[
+        ('2294d97', ['spike']),
+        ('27caec1', ['feature/foobar', 'master']),
+        ('99ec480', ['feature/foobar', 'master', 'spike']),
+        ('0eafe04', ['feature/foobar', 'fixit', 'master', 'spike']),
+    ])
+    def call_fixture(self, request, readonly_test_repo):
+        commitish, branch_names = request.param
+        return commitish, branch_names
 
 
 class Describe_checkout(object):
