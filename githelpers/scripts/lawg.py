@@ -6,7 +6,7 @@ Print a nicely colored git log, one commit per line.
 
 Example:
 
-    * 0561b64  (4 days)  build: update travis-ci passingicon (HEAD, master)
+    * 0561b64  (4 days)  build: update travis-ci passing icon (HEAD, master)
     * 1786f2f  (4 days)  release: prepare v0.5.7 release  (tag: v0.5.7)
     * a767f78  (4 days)  docs: add new placeholder features to API docs
 
@@ -62,7 +62,7 @@ class LogLines(list):
         """
         HASH, TIME, REFS, SUBJ = "%h", "%ar", "%d", "%s"
 
-        fmt = '}%s}%s}%s}%s' % (HASH, TIME, SUBJ, REFS)
+        fmt = '\x1f%s\x1f%s\x1f%s\x1f%s' % (HASH, TIME, SUBJ, REFS)
         cmd = ['git', 'log', '--graph', '--pretty=tformat:%s' % fmt]
         cmd.extend(sys.argv[1:])
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
@@ -110,7 +110,7 @@ class Line(object):
         Return a |Line| object initialized from the raw log line text in
         *line*.
         """
-        tokens = cls._condition(line).split('}')
+        tokens = cls._condition(line).split('\x1f')
         graf = tokens[0]
         sha1, time, subj, refs = (
             tokens[1:] if len(tokens) > 1 else (None, None, None, None)
@@ -210,4 +210,14 @@ class Line(object):
         return line
 
 
-print(LogLines.load())
+# send log lines to stdout one at a time, exiting on broken pipe, such as
+# might happen when user quits `git-lawg | less` before all input is read.
+from errno import EPIPE
+
+for line in str(LogLines.load()).splitlines():
+    try:
+        print(line)
+    except IOError as e:
+        if e.errno == EPIPE:
+            break
+        raise e
