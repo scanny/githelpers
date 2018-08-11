@@ -64,7 +64,7 @@ class LogLines(list):
         fmt = "\x1f%s\x1f%s\x1f%s\x1f%s" % (HASH, TIME, SUBJ, REFS)
         cmd = ["git", "log", "--graph", "--pretty=tformat:%s" % fmt]
         cmd.extend(sys.argv[1:])
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
 
         return cls(Line.from_text(line) for line in proc.stdout.readlines())
 
@@ -159,7 +159,7 @@ class Line(object):
         prefixed with a single-word tag followed by a colon, that tag gets
         a distinct color.
         """
-        subj = self._subj
+        subj = self._subj[:50]
         words = subj.split()
         if not words or not words[0].endswith(":"):
             return subj
@@ -204,17 +204,18 @@ class Line(object):
         ', {n} months' substring in the relative time for commits over a year
         old.
         """
-        line = line.rstrip()
-        # Replace (2 years ago) with (2 years)
+        # --- delimiter \x1b is whitespace in Python 3, so be specific what to strip ---
+        line = line.rstrip(" \n")
+        # --- Replace (2 years ago) with (2 years) ---
         line = line.replace(" ago", "")
-        # Replace (2 years, 5 months) with (2 years)
+        # --- Replace (2 years, 5 months) with (2 years) ---
         line = cls.months_regex.sub("", line)
         return line
 
 
 # send log lines to stdout one at a time, exiting on broken pipe, such as
 # might happen when user quits `git-lawg | less` before all input is read.
-from errno import EPIPE
+from errno import EPIPE  # noqa: E402
 
 for line in str(LogLines.load()).splitlines():
     try:
