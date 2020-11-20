@@ -1,18 +1,12 @@
 # encoding: utf-8
 
-"""
-Wrapper around subprocess, providing command execution services.
-"""
-
-from __future__ import absolute_import, division, print_function, unicode_literals
+"""Wrapper around subprocess, providing command execution services."""
 
 from subprocess import PIPE, Popen
 
 
 class RunCmdError(Exception):
-    """
-    Base class for exceptions in `runcmd` module.
-    """
+    """Base class for exceptions in `runcmd` module."""
 
     def __init__(self, rc, cmd, out, err):
         self._rc = rc
@@ -29,11 +23,10 @@ class RunCmdError(Exception):
 
 
 def run(args):
-    """
-    Return a (rc, out, err) 3-tuple indicating the result of running the
-    command in *args*. *rc*, *out*, and *err* are the return code, output on
-    stdout, and output on stderr, respectively. *out* and *err* are type
-    `str`.
+    """Return (rc, out, err) 3-tuple indicating result of running the command in *args*.
+
+    *rc*, *out*, and *err* are the return code, output on stdout, and output on stderr,
+    respectively. *out* and *err* are type `str`.
     """
     process = Popen(args, stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
@@ -42,19 +35,19 @@ def run(args):
 
 
 def output_of(args):
-    """
-    Return the output written to stdout by the command line in *args*.
+    """Return the output written to stdout by the command line in *args*.
+
     Raises |RunCmdError| if the return code is not zero.
     """
     rc, out, err = run(args)
     if rc != 0:
         raise RunCmdError(rc, args, out, err)
-    return out
+    return str(out, encoding="utf-8")
 
 
 def return_code_of(args):
-    """
-    Return the exit code returned from executing the command line in *args*.
+    """Return the exit code returned from executing the command line in *args*.
+
     All stdout and stderr output is suppressed.
     """
     rc, out, err = run(args)

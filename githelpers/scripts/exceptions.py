@@ -1,16 +1,10 @@
 # encoding: utf-8
 
-"""
-Exceptions for scripts.
-"""
-
-from __future__ import absolute_import, division, print_function, unicode_literals
+"""Exceptions for scripts."""
 
 
 class ExecutionError(Exception):
-    """
-    Execption for returning non-zero error codes directly to main().
-    """
+    """Execption for returning non-zero error codes directly to main()."""
 
     def __init__(self, message, return_code=1):
         self._message = message

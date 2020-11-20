@@ -11,9 +11,7 @@ MAIN_PKG = "githelpers"
 
 
 def _read_from_file(relpath):
-    """
-    Return the text contained in the file at *relpath* as unicode.
-    """
+    """Return the text contained in the file at *relpath* as unicode."""
     thisdir = os.path.dirname(__file__)
     path = os.path.join(thisdir, relpath)
     with codecs.open(path, encoding="utf8") as f:

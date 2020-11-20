@@ -1,10 +1,6 @@
 # encoding: utf-8
 
-"""
-Unit test suite for the githelpers module.
-"""
-
-from __future__ import absolute_import, division, print_function, unicode_literals
+"""Unit test suite for the githelpers module."""
 
 from zipfile import ZipFile
 
@@ -280,13 +276,10 @@ class Describe_reset_hard_to(object):
 
 
 @pytest.fixture(scope="module")
-def module_test_repo(request):
-    """
-    Extract the test repo into a temporary directory having module scope.
-    """
-    test_repo_dir = py.test.ensuretemp("test-repo")
-    zip_file = ZipFile(TEST_REPO_ZIP)
-    zip_file.extractall(str(test_repo_dir))
+def module_test_repo(request, tmpdir_factory):
+    """Extract the test repo into a temporary directory having module scope."""
+    test_repo_dir = tmpdir_factory.mktemp("test-repo")
+    ZipFile(TEST_REPO_ZIP).extractall(str(test_repo_dir))
     return test_repo_dir
 
 

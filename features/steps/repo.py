@@ -1,8 +1,6 @@
 # encoding: utf-8
 
-"""
-Acceptance test step implementations related to repository.
-"""
+"""Acceptance test step implementations related to repository."""
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
