@@ -23,9 +23,15 @@ from ..gitlib import (
 )
 
 
-def main(argv=None):
+def main():
     """Entry point for 'drop' script."""
-    commitish = sys.argv[1] if argv is None else argv[1]
+    args = sys.argv[1:]
+    if len(args) != 1:
+        print("usage: drop <commit>")
+        return 1
+
+    commitish = args[0]
+
     try:
         _drop(commitish)
     except ExecutionError as e:
@@ -40,7 +46,7 @@ def _drop(commitish_to_drop):
     Exits with an error message if *commitish_to_drop* is reachable from more than one
     branch or has other than exactly one parent.
     """
-    _exit_if_not_valid_in_context()
+    _exit_if_not_valid_in_context(commitish_to_drop)
 
     rev_to_drop = _resolve_rev(commitish_to_drop)
     orig_branch = current_branch_name()
@@ -53,7 +59,7 @@ def _drop(commitish_to_drop):
         checkout(orig_branch)
 
 
-def _exit_if_not_valid_in_context():
+def _exit_if_not_valid_in_context(commitish):
     """Exit with error message when current state does not permit drop.
 
     These conditions are:
@@ -65,6 +71,9 @@ def _exit_if_not_valid_in_context():
     """
     if not is_git_repo():
         raise ExecutionError("Not in a Git repository.\nAborting.", 2)
+
+    # --- raise if `commitish` is not a revision in repo ---
+    _resolve_rev(commitish)
 
     if not is_clean():
         raise ExecutionError("Workspace contains uncommitted changes.\nAborting.\a", 3)
