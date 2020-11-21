@@ -4,9 +4,7 @@
 Setup and teardown logic for scenarios.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
 import tempfile
@@ -26,10 +24,10 @@ def before_scenario(context, scenario):
     test_repo_dir = py.path.local(tempfile.mkdtemp())
     empty_dir = py.path.local(tempfile.mkdtemp())
 
-    if 'linear-repo' in scenario.tags:
-        repo_zip = _test_file('linear-repo.zip')
+    if "linear-repo" in scenario.tags:
+        repo_zip = _test_file("linear-repo.zip")
     else:
-        repo_zip = _test_file('test-repo.zip')
+        repo_zip = _test_file("test-repo.zip")
 
     zip_file = ZipFile(repo_zip)
     zip_file.extractall(str(test_repo_dir))
@@ -54,6 +52,4 @@ def _test_file(filename):
     in acceptance test_files directory.
     """
     thisdir = os.path.split(__file__)[0]
-    return os.path.abspath(os.path.join(
-        thisdir, 'steps', 'test_files', filename
-    ))
+    return os.path.abspath(os.path.join(thisdir, "steps", "test_files", filename))

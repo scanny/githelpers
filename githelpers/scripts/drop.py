@@ -6,17 +6,22 @@ reachable from more than one local branch or has other than one parent
 commit.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 
 from .exceptions import ExecutionError
 from ..gitlib import (
-    branches_containing, checkout, current_branch_name, full_hash_of,
-    is_clean, is_git_repo, is_reachable, parent_revs_of, rebase_onto,
-    RunCmdError
+    branches_containing,
+    checkout,
+    current_branch_name,
+    full_hash_of,
+    is_clean,
+    is_git_repo,
+    is_reachable,
+    parent_revs_of,
+    rebase_onto,
+    RunCmdError,
 )
 
 
@@ -27,14 +32,10 @@ def _exit_if_not_valid_in_context():
     is independent.
     """
     if not is_git_repo():
-        raise ExecutionError(
-            'Not in a Git repository.\nAborting.', 2
-        )
+        raise ExecutionError("Not in a Git repository.\nAborting.", 2)
 
     if not is_clean():
-        raise ExecutionError(
-            'Workspace contains uncommitted changes.\nAborting.\a', 3
-        )
+        raise ExecutionError("Workspace contains uncommitted changes.\nAborting.\a", 3)
 
 
 def _only_branch_containing(commitish):
@@ -47,8 +48,8 @@ def _only_branch_containing(commitish):
 
     if branch_count > 1:
         raise ExecutionError(
-            'Commit %s reachable from more than one branch.\n'
-            'Aborting.' % commitish, 5
+            "Commit %s reachable from more than one branch.\n" "Aborting." % commitish,
+            5,
         )
 
     return branch_names[0]
@@ -63,13 +64,11 @@ def _resolve_rev(commitish):
     try:
         rev = full_hash_of(commitish)
     except RunCmdError:
-        raise ExecutionError(
-            'Unknown revision %s.\a' % commitish, 4
-        )
+        raise ExecutionError("Unknown revision %s.\a" % commitish, 4)
 
     if not is_reachable(rev):
         raise ExecutionError(
-            '%s is not a reachable commit.\nAborting.\a' % commitish, 4
+            "%s is not a reachable commit.\nAborting.\a" % commitish, 4
         )
 
     return rev
@@ -84,13 +83,11 @@ def _single_parent_of(commitish):
     parent_rev_count = len(parent_revs)
 
     if parent_rev_count == 0:
-        raise ExecutionError(
-            'Commit %s has no parent.\nAborting.\a' % commitish, 6
-        )
+        raise ExecutionError("Commit %s has no parent.\nAborting.\a" % commitish, 6)
 
     if parent_rev_count > 1:
         raise ExecutionError(
-            'Commit %s has more than one parent.\nAborting.' % commitish, 7
+            "Commit %s has more than one parent.\nAborting." % commitish, 7
         )
 
     return parent_revs[0]
@@ -111,7 +108,7 @@ def _drop(commitish_to_drop):
 
     print(rebase_onto(newbase, rev_to_drop, commit_branch))
 
-    if current_branch_name() != orig_branch and orig_branch != 'HEAD':
+    if current_branch_name() != orig_branch and orig_branch != "HEAD":
         checkout(orig_branch)
 
 

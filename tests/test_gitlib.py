@@ -4,9 +4,7 @@
 Unit test suite for the githelpers module.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from zipfile import ZipFile
 
@@ -14,28 +12,39 @@ import py
 import pytest
 
 from githelpers.gitlib import (
-    branch_exists, branch_hash, branch_hashes, branch_names,
-    branches_containing, checkout, children_of_head, create_branch_at,
-    current_branch_name, delete_branch, head, head_is_independent,
-    independent_branch_hashes, is_clean, is_commit, is_git_repo,
-    parent_revs_of, reset_hard_to
+    branch_exists,
+    branch_hash,
+    branch_hashes,
+    branch_names,
+    branches_containing,
+    checkout,
+    children_of_head,
+    create_branch_at,
+    current_branch_name,
+    delete_branch,
+    head,
+    head_is_independent,
+    independent_branch_hashes,
+    is_clean,
+    is_commit,
+    is_git_repo,
+    parent_revs_of,
+    reset_hard_to,
 )
 
 
-TEST_REPO_ZIP = str(py.path.local(__file__).dirpath('test-repo.zip'))
+TEST_REPO_ZIP = str(py.path.local(__file__).dirpath("test-repo.zip"))
 
 
 class Describe_branch_exists(object):
-
     def it_is_True_for_existing_branch(self, readonly_test_repo):
-        assert branch_exists('master') is True
+        assert branch_exists("master") is True
 
     def it_is_False_for_nonexistent_branch(self, readonly_test_repo):
-        assert branch_exists('fzxyed') is False
+        assert branch_exists("fzxyed") is False
 
 
 class Describe_branch_hashes(object):
-
     def it_returns_a_hash_for_each_branch(self, call_fixture):
         expected_value = call_fixture
         hashes = branch_hashes()
@@ -46,23 +55,19 @@ class Describe_branch_hashes(object):
     @pytest.fixture
     def call_fixture(self, readonly_test_repo):
         return [
-            '27caec118c2fa2a11b481a02e68a214a64cb3e87',
-            '0eafe04e11a41374a1bd11f2eb1776d9d44febb1',
-            '53a12abad9779cd3c4b02b83df01af9c01ed28b4',
-            '2294d9797588a8a0f6aa95ef488cf872b36f2131',
+            "27caec118c2fa2a11b481a02e68a214a64cb3e87",
+            "0eafe04e11a41374a1bd11f2eb1776d9d44febb1",
+            "53a12abad9779cd3c4b02b83df01af9c01ed28b4",
+            "2294d9797588a8a0f6aa95ef488cf872b36f2131",
         ]
 
 
 class Describe_branch_names(object):
-
     def it_returns_all_the_local_branch_names(self, readonly_test_repo):
-        assert branch_names() == [
-            'feature/foobar', 'fixit', 'master', 'spike'
-        ]
+        assert branch_names() == ["feature/foobar", "fixit", "master", "spike"]
 
 
 class Describe_branches_containing(object):
-
     def it_returns_branch_names_containing_commitish(self, call_fixture):
         commitish, expected_value = call_fixture
         branch_names = branches_containing(commitish)
@@ -70,29 +75,29 @@ class Describe_branches_containing(object):
 
     # fixtures -------------------------------------------------------
 
-    @pytest.fixture(params=[
-        ('2294d97', ['spike']),
-        ('27caec1', ['feature/foobar', 'master']),
-        ('99ec480', ['feature/foobar', 'master', 'spike']),
-        ('0eafe04', ['feature/foobar', 'fixit', 'master', 'spike']),
-    ])
+    @pytest.fixture(
+        params=[
+            ("2294d97", ["spike"]),
+            ("27caec1", ["feature/foobar", "master"]),
+            ("99ec480", ["feature/foobar", "master", "spike"]),
+            ("0eafe04", ["feature/foobar", "fixit", "master", "spike"]),
+        ]
+    )
     def call_fixture(self, request, readonly_test_repo):
         commitish, branch_names = request.param
         return commitish, branch_names
 
 
 class Describe_checkout(object):
-
     def it_checks_out_a_branch(self, new_test_repo):
-        bazfoo = new_test_repo.join('bazfoo.txt')
+        bazfoo = new_test_repo.join("bazfoo.txt")
         assert not bazfoo.check()
-        checkout('master')
+        checkout("master")
         assert bazfoo.check()
-        assert current_branch_name() == 'master'
+        assert current_branch_name() == "master"
 
 
 class Describe_children_of_head(object):
-
     def it_returns_the_child_commit_hashes(self, call_fixture):
         expected_value = call_fixture
         hashes = children_of_head()
@@ -100,12 +105,19 @@ class Describe_children_of_head(object):
 
     # fixtures -------------------------------------------------------
 
-    @pytest.fixture(params=[
-        ('spike',   []),
-        ('fixit',   ['6604de21f566378d994a517018a909c078a055bc']),
-        ('99ec480', ['27caec118c2fa2a11b481a02e68a214a64cb3e87',
-                     '2294d9797588a8a0f6aa95ef488cf872b36f2131']),
-    ])
+    @pytest.fixture(
+        params=[
+            ("spike", []),
+            ("fixit", ["6604de21f566378d994a517018a909c078a055bc"]),
+            (
+                "99ec480",
+                [
+                    "27caec118c2fa2a11b481a02e68a214a64cb3e87",
+                    "2294d9797588a8a0f6aa95ef488cf872b36f2131",
+                ],
+            ),
+        ]
+    )
     def call_fixture(self, request, new_test_repo):
         commit_ish, hashes = request.param
         checkout(commit_ish)
@@ -113,49 +125,47 @@ class Describe_children_of_head(object):
 
 
 class Describe_create_branch_at(object):
-
     def it_creates_a_new_branch_at_commit_ref(self, new_test_repo):
-        assert not branch_exists('foobar')
+        assert not branch_exists("foobar")
 
-        create_branch_at('foobar', '2294d979')
+        create_branch_at("foobar", "2294d979")
 
-        assert branch_exists('foobar')
-        assert branch_hash('foobar').startswith('2294d979')
-        assert current_branch_name() != 'foobar'
+        assert branch_exists("foobar")
+        assert branch_hash("foobar").startswith("2294d979")
+        assert current_branch_name() != "foobar"
 
 
 class Describe_current_branch_name(object):
-
     def it_is_spike_for_test_repo(self, readonly_test_repo):
-        assert current_branch_name() == 'spike'
+        assert current_branch_name() == "spike"
 
 
 class Describe_delete_branch(object):
-
     def it_removes_a_branch(self, new_test_repo):
-        assert branch_exists('feature/foobar')
-        delete_branch('feature/foobar')
-        assert not branch_exists('feature/foobar')
+        assert branch_exists("feature/foobar")
+        delete_branch("feature/foobar")
+        assert not branch_exists("feature/foobar")
 
     def it_raises_on_delete_current_branch(self, new_test_repo):
         with pytest.raises(ValueError):
-            delete_branch('spike')
+            delete_branch("spike")
 
 
 class Describe_head_is_independent(object):
-
     def it_knows_whether_current_branch_is_independent(self, call_fixture):
         expected_value = call_fixture
         assert head_is_independent() == expected_value
 
     # fixtures -------------------------------------------------------
 
-    @pytest.fixture(params=[
-        ('spike',          True),
-        ('master',         True),
-        ('feature/foobar', False),
-        ('fixit',          False),
-    ])
+    @pytest.fixture(
+        params=[
+            ("spike", True),
+            ("master", True),
+            ("feature/foobar", False),
+            ("fixit", False),
+        ]
+    )
     def call_fixture(self, request, new_test_repo):
         branch_name, expected_value = request.param
         checkout(branch_name)
@@ -163,7 +173,6 @@ class Describe_head_is_independent(object):
 
 
 class Describe_independent_branch_hashes(object):
-
     def it_returns_a_hash_for_each_independent_branch(self, call_fixture):
         expected_value = call_fixture
         hashes = independent_branch_hashes()
@@ -174,13 +183,12 @@ class Describe_independent_branch_hashes(object):
     @pytest.fixture
     def call_fixture(self, readonly_test_repo):
         return [
-            '53a12abad9779cd3c4b02b83df01af9c01ed28b4',
-            '2294d9797588a8a0f6aa95ef488cf872b36f2131',
+            "53a12abad9779cd3c4b02b83df01af9c01ed28b4",
+            "2294d9797588a8a0f6aa95ef488cf872b36f2131",
         ]
 
 
 class Describe_is_clean(object):
-
     def it_returns_True_in_clean_repo(self, clean_repo_fixture):
         assert is_clean() is True
 
@@ -195,11 +203,10 @@ class Describe_is_clean(object):
 
     @pytest.fixture
     def dirty_repo_fixture(self, request, new_test_repo):
-        new_test_repo.join('newfile.txt').write('0x984rt\n')
+        new_test_repo.join("newfile.txt").write("0x984rt\n")
 
 
 class Describe_is_commit(object):
-
     def it_is_True_for_commit(self, valid_sha1_fixture):
         sha1 = valid_sha1_fixture
         assert is_commit(sha1) is True
@@ -212,15 +219,14 @@ class Describe_is_commit(object):
 
     @pytest.fixture
     def valid_sha1_fixture(self, request, readonly_test_repo):
-        return '6604de21f566378d994a517018a909c078a055bc'
+        return "6604de21f566378d994a517018a909c078a055bc"
 
     @pytest.fixture
     def bad_hash_fixture(self, request, readonly_test_repo):
-        return 'f00ba59999999999999999999999999999999999'
+        return "f00ba59999999999999999999999999999999999"
 
 
 class Describe_is_git_repo(object):
-
     def it_returns_True_in_git_repo(self, inside_repo_fixture):
         assert is_git_repo() is True
 
@@ -241,7 +247,6 @@ class Describe_is_git_repo(object):
 
 
 class Describe_parent_revs_of(object):
-
     def it_returns_a_hash_for_each_parent_commit(self, call_fixture):
         commitish, expected_value = call_fixture
         revs = parent_revs_of(commitish)
@@ -249,35 +254,37 @@ class Describe_parent_revs_of(object):
 
     # fixtures -------------------------------------------------------
 
-    @pytest.fixture(params=[
-        ('spike',  ['99ec48014b47dc9f9cfe6fd325b281dbaed12d3f']),
-        ('fixit',  []),
-        ('master', ['27caec118c2fa2a11b481a02e68a214a64cb3e87']),
-        ('HEAD',   ['99ec48014b47dc9f9cfe6fd325b281dbaed12d3f']),
-    ])
+    @pytest.fixture(
+        params=[
+            ("spike", ["99ec48014b47dc9f9cfe6fd325b281dbaed12d3f"]),
+            ("fixit", []),
+            ("master", ["27caec118c2fa2a11b481a02e68a214a64cb3e87"]),
+            ("HEAD", ["99ec48014b47dc9f9cfe6fd325b281dbaed12d3f"]),
+        ]
+    )
     def call_fixture(self, request, new_test_repo):
         commitish, revs = request.param
         return commitish, revs
 
 
 class Describe_reset_hard_to(object):
-
     def it_resets_the_commit_and_working_tree(self, new_test_repo):
-        barbaz = new_test_repo.join('barbaz.txt')
+        barbaz = new_test_repo.join("barbaz.txt")
         assert barbaz.check()
-        reset_hard_to('fixit')
+        reset_hard_to("fixit")
         assert not barbaz.check()
-        assert head() == '0eafe04e11a41374a1bd11f2eb1776d9d44febb1'
+        assert head() == "0eafe04e11a41374a1bd11f2eb1776d9d44febb1"
 
 
 # shared fixtures ----------------------------------------------------
 
-@pytest.fixture(scope='module')
+
+@pytest.fixture(scope="module")
 def module_test_repo(request):
     """
     Extract the test repo into a temporary directory having module scope.
     """
-    test_repo_dir = py.test.ensuretemp('test-repo')
+    test_repo_dir = py.test.ensuretemp("test-repo")
     zip_file = ZipFile(TEST_REPO_ZIP)
     zip_file.extractall(str(test_repo_dir))
     return test_repo_dir

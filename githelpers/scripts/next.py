@@ -6,9 +6,7 @@ message if there is not exactly one direct child or if changes in the working
 directory would be lost.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 
@@ -23,14 +21,10 @@ def _exit_if_not_valid_in_context():
     return None.
     """
     if not is_git_repo():
-        raise ExecutionError(
-            'Not in a Git repository.\nAborting.', 2
-        )
+        raise ExecutionError("Not in a Git repository.\nAborting.", 2)
 
     if not is_clean():
-        raise ExecutionError(
-            'Workspace contains uncommitted changes.\nAborting.', 3
-        )
+        raise ExecutionError("Workspace contains uncommitted changes.\nAborting.", 3)
 
 
 def _child():
@@ -42,14 +36,10 @@ def _child():
     child_sha1s = children_of_head()
 
     if len(child_sha1s) == 0:
-        raise ExecutionError(
-            'No next commit.\a', 4
-        )
+        raise ExecutionError("No next commit.\a", 4)
 
     if len(child_sha1s) > 1:
-        raise ExecutionError(
-            'More than one child.\nAborting.\a', 5
-        )
+        raise ExecutionError("More than one child.\nAborting.\a", 5)
 
     return child_sha1s[0]
 
@@ -61,7 +51,7 @@ def _next():
     the working directory would be lost.
     """
     _exit_if_not_valid_in_context()
-    print(reset_hard_to(_child()), end='')
+    print(reset_hard_to(_child()), end="")
 
 
 def main():

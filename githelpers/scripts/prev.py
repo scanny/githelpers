@@ -6,15 +6,17 @@ message if changes in the working directory would be lost or if the current
 commit would no longer be reachable.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 
 from .exceptions import ExecutionError
 from ..gitlib import (
-    head_is_independent, is_clean, is_git_repo, parent_revs_of, reset_hard_to
+    head_is_independent,
+    is_clean,
+    is_git_repo,
+    parent_revs_of,
+    reset_hard_to,
 )
 
 
@@ -25,19 +27,13 @@ def _exit_if_not_valid_in_context():
     is independent. Otherwise, return |None|.
     """
     if not is_git_repo():
-        raise ExecutionError(
-            'Not in a Git repository.\nAborting.', 2
-        )
+        raise ExecutionError("Not in a Git repository.\nAborting.", 2)
 
     if not is_clean():
-        raise ExecutionError(
-            'Workspace contains uncommitted changes.\nAborting.\a', 3
-        )
+        raise ExecutionError("Workspace contains uncommitted changes.\nAborting.\a", 3)
 
     if head_is_independent():
-        raise ExecutionError(
-            'Current commit would become unreachable\nAborting.\a', 4
-        )
+        raise ExecutionError("Current commit would become unreachable\nAborting.\a", 4)
 
 
 def _parent():
@@ -46,9 +42,9 @@ def _parent():
     error message if there is no parent commit (i.e. HEAD is an initial
     commit).
     """
-    parents = parent_revs_of('HEAD')
+    parents = parent_revs_of("HEAD")
     if not parents:
-        raise ExecutionError('No parent commit.\nAborting.\a', 5)
+        raise ExecutionError("No parent commit.\nAborting.\a", 5)
     return parents[0]
 
 
@@ -59,7 +55,7 @@ def _prev():
     current commit would no longer be reachable.
     """
     _exit_if_not_valid_in_context()
-    print(reset_hard_to(_parent()), end='')
+    print(reset_hard_to(_parent()), end="")
 
 
 def main():

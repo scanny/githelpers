@@ -7,16 +7,20 @@ the working tree is dirty, or *commit_ref* does not identify a commit in the
 repository.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 
 from .exceptions import ExecutionError
 from ..gitlib import (
-    branch_exists, checkout, create_branch_at, current_branch_name, is_clean,
-    is_commit, is_git_repo, reset_hard_to
+    branch_exists,
+    checkout,
+    create_branch_at,
+    current_branch_name,
+    is_clean,
+    is_commit,
+    is_git_repo,
+    reset_hard_to,
 )
 
 
@@ -26,14 +30,10 @@ def _exit_if_not_valid_in_context():
     repository or if the working directory is dirty. Otherwise, return None.
     """
     if not is_git_repo():
-        raise ExecutionError(
-            'Not in a Git repository.\nAborting.', 2
-        )
+        raise ExecutionError("Not in a Git repository.\nAborting.", 2)
 
     if not is_clean():
-        raise ExecutionError(
-            'Workspace contains uncommitted changes.\nAborting.', 3
-        )
+        raise ExecutionError("Workspace contains uncommitted changes.\nAborting.", 3)
 
 
 def _exit_if_not_valid(commit_ref):
@@ -43,7 +43,7 @@ def _exit_if_not_valid(commit_ref):
     """
     if not is_commit(commit_ref):
         raise ExecutionError(
-            '%s is not a valid commit reference.\nAborting.' % commit_ref, 4
+            "%s is not a valid commit reference.\nAborting." % commit_ref, 4
         )
 
 
@@ -53,12 +53,12 @@ def _checkout_branch_and_reset_to(branch_name, commit_ref):
     branch at HEAD it doesn't exist.
     """
     if not branch_exists(branch_name):
-        create_branch_at(branch_name, 'HEAD')
+        create_branch_at(branch_name, "HEAD")
 
     if current_branch_name() != branch_name:
-        print(checkout(branch_name), end='')
+        print(checkout(branch_name), end="")
 
-    print(reset_hard_to(commit_ref), end='')
+    print(reset_hard_to(commit_ref), end="")
 
 
 def _fix(commit_ref):
@@ -70,7 +70,7 @@ def _fix(commit_ref):
     """
     _exit_if_not_valid_in_context()
     _exit_if_not_valid(commit_ref)
-    _checkout_branch_and_reset_to('fixit', commit_ref)
+    _checkout_branch_and_reset_to("fixit", commit_ref)
 
 
 def main(argv=None):

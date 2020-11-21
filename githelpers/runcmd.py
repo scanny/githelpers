@@ -4,9 +4,7 @@
 Wrapper around subprocess, providing command execution services.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from subprocess import PIPE, Popen
 
@@ -15,6 +13,7 @@ class RunCmdError(Exception):
     """
     Base class for exceptions in `runcmd` module.
     """
+
     def __init__(self, rc, cmd, out, err):
         self._rc = rc
         self._cmd = cmd
@@ -22,10 +21,10 @@ class RunCmdError(Exception):
         self._err = err
 
     def __str__(self):
-        return (
-            "Command '%s' returned non-zero exit status %d, "
-            "reporting:\n%s" %
-            (self._cmd, self._rc, self._err)
+        return "Command '%s' returned non-zero exit status %d, " "reporting:\n%s" % (
+            self._cmd,
+            self._rc,
+            self._err,
         )
 
 
