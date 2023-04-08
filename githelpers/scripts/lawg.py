@@ -19,7 +19,7 @@ import errno
 import re
 import subprocess
 import sys
-from typing import List, Protocol, Tuple
+from typing import Iterable, Protocol, Tuple
 
 
 RED = "\033[31m"
@@ -62,8 +62,11 @@ class _Line(Protocol):
         ...
 
 
-class _LogLines(List["_Line"]):
+class _LogLines:
     """Collection of `_Line` object for each line in the git log."""
+
+    def __init__(self, lines: Iterable[_Line]):
+        self._lines = tuple(lines)
 
     def __str__(self):
         """The formatted and ANSI-colored git log as a text string.
@@ -71,10 +74,12 @@ class _LogLines(List["_Line"]):
         Suitable for dumping to the console. Used as the main text output method.
         """
         max_graf, max_sha1, max_time = self._max_widths
-        return "\n".join([line.pretty(max_graf, max_sha1, max_time) for line in self])
+        return "\n".join(
+            [line.pretty(max_graf, max_sha1, max_time) for line in self._lines]
+        )
 
     @classmethod
-    def load(cls):
+    def load(cls) -> "_LogLines":
         """Return `_LogLines` object filled with the results of the git log requested.
 
         Command-line parameters are passed through to the git log command.
@@ -96,7 +101,9 @@ class _LogLines(List["_Line"]):
         respectively, across all the lines in this list. This is used to present these
         values in even columns.
         """
-        graf_widths, sha1_widths, time_widths = zip(*[line.widths for line in self])
+        graf_widths, sha1_widths, time_widths = zip(
+            *[line.widths for line in self._lines]
+        )
         return (max(graf_widths), max(sha1_widths), max(time_widths))
 
 
