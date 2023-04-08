@@ -41,12 +41,8 @@ def main():
     # --- Send log lines to stdout one at a time, exiting on broken pipe, such as might
     # --- happen when user quits `git-lawg | less` before all input is read.
     try:
-        if sys.version_info >= (3, 0):
-            for line in str(LogLines.load()).splitlines():
-                print(line)
-        else:
-            for line in unicode(LogLines.load()).splitlines():  # noqa: F821
-                print(line.encode("utf-8"))
+        for line in str(LogLines.load()).splitlines():
+            print(line)
     except IOError as e:
         if e.errno != errno.EPIPE:
             raise
