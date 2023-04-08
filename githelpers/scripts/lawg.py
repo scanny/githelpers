@@ -91,7 +91,7 @@ class _LogLines:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
         assert proc.stdout is not None
 
-        return cls(_FullLine.from_text(line) for line in proc.stdout.readlines())
+        return cls(_BaseLine.from_text(line) for line in proc.stdout.readlines())
 
     @property
     def _max_widths(self) -> Tuple[int, int, int]:
@@ -107,7 +107,66 @@ class _LogLines:
         return (max(graf_widths), max(sha1_widths), max(time_widths))
 
 
-class _FullLine(object):
+class _BaseLine:
+    """A "line" represents a single output line of the git-lawg output.
+
+    Example:
+
+    * 24b6388b0a          (17 hours)  code refactoring (spike)
+    *   95fc8bd5eb        (3 days)    Merge branch 'feature' into master
+    |\
+    * | c9ea41de79        (3 days)    bug fix
+    * | fb61bb6050        (3 days)    template fix
+
+    Note that some lines contain only the graphical ancestry-line characters. This gives
+    rise to the need for two subtypes.
+    """
+
+    _graf: str
+
+    ansi_regex = re.compile(r"\033\[[0-9;]*m")
+    months_regex = re.compile(r", [0-9]+ months?")
+
+    @classmethod
+    def from_text(cls, line: str) -> _Line:
+        """Factory method.
+
+        Return a `_Line` object initialized from the raw log line text in *line*.
+        """
+        tokens = cls._condition_line(line).split("\x1f")
+
+        # -- a full line has five tokens --
+        if len(tokens) > 1:
+            graf, sha1, time, subj, refs = tokens
+            return _FullLine(graf, sha1, time, subj, refs)
+
+        # -- a "graf-only" line has only one --
+        graf = tokens[0]
+        return _FullLine(graf, None, None, None, None)
+
+    @classmethod
+    def _condition_line(cls, line: str) -> str:
+        """Return str `line` after removing extraneous information.
+
+        Undesired information includes ' ago' and the ', {n} months' substring in the
+        relative time for commits over a year old.
+        """
+        # --- delimiter \x1b is whitespace in Python 3, so be specific what to strip ---
+        line = line.rstrip(" \n")
+        # --- Replace (2 years ago) with (2 years) ---
+        line = line.replace(" ago", "")
+        # --- Replace (2 years, 5 months) with (2 years) ---
+        line = cls.months_regex.sub("", line)
+        return line
+
+    @property
+    def _graf_len(self):
+        """The length of the graf string after stripping any ANSI color codes."""
+        ansi_stripped_graf = self.ansi_regex.sub("", self._graf)
+        return len(ansi_stripped_graf)
+
+
+class _FullLine(_BaseLine):
     """ A single git log line, broken into five tokens:
 
     * *graf* - the graphical ancestry line characters
@@ -119,28 +178,12 @@ class _FullLine(object):
     Handles all the ANSI coloring and line formatting.
     """
 
-    months_regex = re.compile(r", [0-9]+ months?")
-    ansi_regex = re.compile(r"\033\[[0-9;]*m")
-
     def __init__(self, graf: str, sha1: str, time: str, subj: str, refs: str):
         self._graf = graf
         self._sha1 = sha1
         self._time = time
         self._subj = subj
         self._refs = refs
-
-    @classmethod
-    def from_text(cls, line: str) -> "_Line":
-        """Factory method.
-
-        Return a `_Line` object initialized from the raw log line text in `line`.
-        """
-        tokens = cls._condition(line).split("\x1f")
-        graf = tokens[0]
-        sha1, time, subj, refs = (
-            tokens[1:] if len(tokens) > 1 else (None, None, None, None)
-        )
-        return cls(graf, sha1, time, subj, refs)
 
     def pretty(self, max_graf: int, max_sha1: int, max_time: int) -> str:
         """Return this line formatted and colored, ready for display on the console."""
@@ -208,24 +251,3 @@ class _FullLine(object):
         if self._sha1 is None:
             return self._graf_len, 0, 0
         return self._graf_len, len(self._sha1), len(self._time)
-
-    @property
-    def _graf_len(self) -> int:
-        """The length of the graf string after stripping any ANSI color codes."""
-        ansi_stripped_graf = self.ansi_regex.sub("", self._graf)
-        return len(ansi_stripped_graf)
-
-    @classmethod
-    def _condition(cls, line: str) -> str:
-        """Return str `line` after removing extraneous information.
-
-        Undesired information includes ' ago' and the ', {n} months' substring in the
-        relative time for commits over a year old.
-        """
-        # --- delimiter \x1b is whitespace in Python 3, so be specific what to strip ---
-        line = line.rstrip(" \n")
-        # --- Replace (2 years ago) with (2 years) ---
-        line = line.replace(" ago", "")
-        # --- Replace (2 years, 5 months) with (2 years) ---
-        line = cls.months_regex.sub("", line)
-        return line
