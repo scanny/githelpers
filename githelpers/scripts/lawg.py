@@ -142,7 +142,7 @@ class _BaseLine:
 
         # -- a "graf-only" line has only one --
         graf = tokens[0]
-        return _FullLine(graf, None, None, None, None)
+        return _GrafOnlyLine(graf)
 
     @classmethod
     def _condition_line(cls, line: str) -> str:
@@ -187,19 +187,12 @@ class _FullLine(_BaseLine):
 
     def pretty(self, max_graf: int, max_sha1: int, max_time: int) -> str:
         """Return this line formatted and colored, ready for display on the console."""
-        graf, sha1 = self._graf, self._sha1
-        if sha1 is None:
-            return graf
-        sha1_pad = (max_graf + max_sha1 - self._graf_len - len(sha1)) * " "
-        time_pad = (max_time - len(self._time)) * " "
-        return "%s%s%s  %s%s  %s%s" % (
-            graf,
-            self.sha1,
-            sha1_pad,
-            self.time,
-            time_pad,
-            self.subj,
-            self.refs,
+        sha1_pad = " " * (max_graf + max_sha1 - self._graf_len - len(self._sha1))
+        time_pad = " " * (max_time - len(self._time))
+        return (
+            f"{self._graf}{self.sha1}{sha1_pad}"
+            f"  {self.time}{time_pad}"
+            f"  {self.subj}{self.refs}"
         )
 
     @property
@@ -248,6 +241,24 @@ class _FullLine(_BaseLine):
         are stripped from it. These three fields figure in the padding added to fields
         to get them to line up in neat columns on the console.
         """
-        if self._sha1 is None:
-            return self._graf_len, 0, 0
         return self._graf_len, len(self._sha1), len(self._time)
+
+
+class _GrafOnlyLine(_BaseLine):
+    """A line that contains only the graphical ancestry-line characters."""
+
+    def __init__(self, graf: str):
+        self._graf = graf
+
+    def pretty(self, max_graf: int, max_sha1: int, max_time: int) -> str:
+        """Return this line formatted and colored, ready for display on the console."""
+        # -- the max-width arguments are unused for a graf-only line --
+        del max_graf
+        del max_sha1
+        del max_time
+        return self._graf
+
+    @property
+    def widths(self) -> Tuple[int, int, int]:
+        """The (graf_width, sha1_width, time_width) 3-tuple for this line."""
+        return self._graf_len, 0, 0
