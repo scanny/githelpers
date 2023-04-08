@@ -41,7 +41,7 @@ def main():
     # --- Send log lines to stdout one at a time, exiting on broken pipe, such as might
     # --- happen when user quits `git-lawg | less` before all input is read.
     try:
-        for line in str(LogLines.load()).splitlines():
+        for line in str(_LogLines.load()).splitlines():
             print(line)
     except IOError as e:
         if e.errno != errno.EPIPE:
@@ -49,8 +49,8 @@ def main():
         sys.stderr.close()
 
 
-class LogLines(List["Line"]):
-    """Collection of `Line` object for each line in the  git log."""
+class _LogLines(List["_Line"]):
+    """Collection of `_Line` object for each line in the git log."""
 
     def __str__(self):
         """The formatted and ANSI-colored git log as a text string.
@@ -62,7 +62,7 @@ class LogLines(List["Line"]):
 
     @classmethod
     def load(cls):
-        """Return |LogLines| object filled with the results of the git log requested.
+        """Return `_LogLines` object filled with the results of the git log requested.
 
         Command-line parameters are passed through to the git log command.
         """
@@ -73,7 +73,7 @@ class LogLines(List["Line"]):
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
         assert proc.stdout is not None
 
-        return cls(Line.from_text(line) for line in proc.stdout.readlines())
+        return cls(_Line.from_text(line) for line in proc.stdout.readlines())
 
     @property
     def _max_widths(self) -> Tuple[int, int, int]:
@@ -87,7 +87,7 @@ class LogLines(List["Line"]):
         return (max(graf_widths), max(sha1_widths), max(time_widths))
 
 
-class Line(object):
+class _Line(object):
     """ A single git log line, broken into five tokens:
 
     * *graf* - the graphical ancestry line characters
@@ -110,7 +110,7 @@ class Line(object):
         self._refs = refs
 
     @classmethod
-    def from_text(cls, line: str) -> "Line":
+    def from_text(cls, line: str) -> "_Line":
         """Factory method.
 
         Return a `_Line` object initialized from the raw log line text in `line`.
