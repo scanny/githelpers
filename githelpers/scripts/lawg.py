@@ -33,7 +33,7 @@ RESET = "\033[0m"
 
 REFS_COLOR = BLUE
 SHA1_COLOR = YELLOW
-TAG_COLOR = CYAN
+CLASSIFIER_COLOR = CYAN
 TIME_COLOR = GREEN
 
 
@@ -167,12 +167,12 @@ class _Line(object):
         words = subj.split()
         if not words or not words[0].endswith(":"):
             return subj
-        tag = words[0]
-        remainder = subj[len(tag) :]
-        return "%s%s%s%s" % (TAG_COLOR, tag, RESET, remainder)
+        classifier = words[0]
+        remainder = subj[len(classifier) :]
+        return f"{CLASSIFIER_COLOR}{classifier}{RESET}{remainder}"
 
     @property
-    def time(self) -> str:
+    def time(self):
         """The colored and formatted relative time string, surrounded by parentheses."""
         return "%s(%s)%s" % (TIME_COLOR, self._time, RESET)
 

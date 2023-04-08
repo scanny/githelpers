@@ -148,10 +148,10 @@ def reachable_revs():
     return output_of(["git", "rev-list", "--all"]).split()
 
 
-def rebase_onto(newbase: str, fork_point: str, branch_name: str):
-    """Rebase `branch_name` onto `newbase` exclusive of the commit at `fork_point`."""
+def rebase_onto(newbase: str, old_base: str, branch_name: str):
+    """Rebase `branch_name` onto `newbase` exclusive of the commit at `old_base`."""
     return output_of(
-        ["git", "rebase", "--onto", newbase, fork_point, branch_name]
+        ["git", "rebase", "--onto", newbase, old_base, branch_name]
     ).rstrip()
 
 
