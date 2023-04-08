@@ -7,6 +7,7 @@ or has other than one parent commit.
 """
 
 import sys
+from typing import List, Optional
 
 from .exceptions import ExecutionError
 from ..gitlib import (
@@ -23,9 +24,9 @@ from ..gitlib import (
 )
 
 
-def main():
+def main(argv: Optional[List[str]] = None):
     """Entry point for 'drop' script."""
-    args = sys.argv[1:]
+    args = sys.argv[1:] if argv is None else argv[1:]
     if len(args) != 1:
         print("usage: drop <commit>")
         return 1
