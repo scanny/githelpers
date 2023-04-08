@@ -3,7 +3,6 @@
 """Git helper functions, each roughly equivalent to a form of a git command."""
 
 from .runcmd import output_of, return_code_of
-from .runcmd import RunCmdError  # noqa
 
 
 def branch_exists(branch_name: str):

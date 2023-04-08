@@ -20,8 +20,8 @@ from ..gitlib import (
     is_reachable,
     parent_revs_of,
     rebase_onto,
-    RunCmdError,
 )
+from ..runcmd import RunCmdError
 
 
 def main(argv: Optional[List[str]] = None):
