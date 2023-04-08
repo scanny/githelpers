@@ -41,7 +41,7 @@ def main(argv: Optional[List[str]] = None):
     return 0
 
 
-def _drop(commitish_to_drop):
+def _drop(commitish_to_drop: str):
     """Remove `commitish_to_drop` from its branch.
 
     Exits with an error message if `commitish_to_drop` is reachable from more than one
@@ -60,7 +60,7 @@ def _drop(commitish_to_drop):
         checkout(orig_branch)
 
 
-def _exit_if_not_valid_in_context(commitish):
+def _exit_if_not_valid_in_context(commitish: str):
     """Exit with error message when current state does not permit drop.
 
     These conditions are:
@@ -80,7 +80,7 @@ def _exit_if_not_valid_in_context(commitish):
         raise ExecutionError("Workspace contains uncommitted changes.\nAborting.\a", 3)
 
 
-def _only_branch_containing(commitish):
+def _only_branch_containing(commitish: str):
     """Return the name of the branch containing `commitish`.
 
     Exit with an error message if `commitish` can be reached from other than exactly one
@@ -98,7 +98,7 @@ def _only_branch_containing(commitish):
     return branch_names[0]
 
 
-def _resolve_rev(commitish):
+def _resolve_rev(commitish: str):
     """Return the 40 character SHA1 hash for `committish`.
 
     Exit with an error message if `commitish` does not resolve to a reachable commit in
@@ -117,7 +117,7 @@ def _resolve_rev(commitish):
     return rev
 
 
-def _single_parent_of(commitish):
+def _single_parent_of(commitish: str):
     """Return the SHA1 hash of the single parent of `commitish`.
 
     Exit with an error message if there is other than a single parent.

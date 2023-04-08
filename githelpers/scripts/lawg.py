@@ -19,6 +19,7 @@ import errno
 import re
 import subprocess
 import sys
+from typing import List, Tuple
 
 
 RED = "\033[31m"
@@ -48,7 +49,7 @@ def main():
         sys.stderr.close()
 
 
-class LogLines(list):
+class LogLines(List["Line"]):
     """Collection of `Line` object for each line in the  git log."""
 
     def __str__(self):
@@ -70,11 +71,12 @@ class LogLines(list):
         fmt = "\x1f%s\x1f%s\x1f%s\x1f%s" % (HASH, TIME, SUBJ, REFS)
         cmd = ["git", "log", "--graph", "--pretty=tformat:%s" % fmt] + sys.argv[1:]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+        assert proc.stdout is not None
 
         return cls(Line.from_text(line) for line in proc.stdout.readlines())
 
     @property
-    def _max_widths(self):
+    def _max_widths(self) -> Tuple[int, int, int]:
         """A (max_graf_width, max_sha1_width, max_time_width) 3-tuple.
 
         Contains the maximum string length of the graf, sha1, and time fields,
@@ -100,7 +102,7 @@ class Line(object):
     months_regex = re.compile(r", [0-9]+ months?")
     ansi_regex = re.compile(r"\033\[[0-9;]*m")
 
-    def __init__(self, graf, sha1, time, subj, refs):
+    def __init__(self, graf: str, sha1: str, time: str, subj: str, refs: str):
         self._graf = graf
         self._sha1 = sha1
         self._time = time
@@ -108,7 +110,7 @@ class Line(object):
         self._refs = refs
 
     @classmethod
-    def from_text(cls, line):
+    def from_text(cls, line: str) -> "Line":
         """Factory method.
 
         Return a `_Line` object initialized from the raw log line text in `line`.
@@ -120,7 +122,7 @@ class Line(object):
         )
         return cls(graf, sha1, time, subj, refs)
 
-    def pretty(self, max_graf, max_sha1, max_time):
+    def pretty(self, max_graf: int, max_sha1: int, max_time: int) -> str:
         """Return this line formatted and colored, ready for display on the console."""
         graf, sha1 = self._graf, self._sha1
         if sha1 is None:
@@ -138,7 +140,7 @@ class Line(object):
         )
 
     @property
-    def refs(self):
+    def refs(self) -> str:
         """The colored and formatted refs string.
 
         Prefixed with padding here to avoid trailing whitespace in commits that have no
@@ -150,12 +152,12 @@ class Line(object):
         return " %s%s%s" % (REFS_COLOR, refs, RESET)
 
     @property
-    def sha1(self):
+    def sha1(self) -> str:
         """The colored and formatted SHA1 hash string."""
         return "%s%s%s" % (SHA1_COLOR, self._sha1, RESET)
 
     @property
-    def subj(self):
+    def subj(self) -> str:
         """The colored and formatted commit message string.
 
         If the message is prefixed with a single-word classifier followed by a colon,
@@ -170,12 +172,12 @@ class Line(object):
         return "%s%s%s%s" % (TAG_COLOR, tag, RESET, remainder)
 
     @property
-    def time(self):
+    def time(self) -> str:
         """The colored and formatted relative time string, surrounded by parentheses."""
         return "%s(%s)%s" % (TIME_COLOR, self._time, RESET)
 
     @property
-    def widths(self):
+    def widths(self) -> Tuple[int, int, int]:
         """The (graf_width, sha1_width, time_width) 3-tuple for this line.
 
         It contains the string length of the graf, sha1, and time fields for this line,
@@ -188,13 +190,13 @@ class Line(object):
         return self._graf_len, len(self._sha1), len(self._time)
 
     @property
-    def _graf_len(self):
+    def _graf_len(self) -> int:
         """The length of the graf string after stripping any ANSI color codes."""
         ansi_stripped_graf = self.ansi_regex.sub("", self._graf)
         return len(ansi_stripped_graf)
 
     @classmethod
-    def _condition(cls, line):
+    def _condition(cls, line: str) -> str:
         """Return str `line` after removing extraneous information.
 
         Undesired information includes ' ago' and the ', {n} months' substring in the
