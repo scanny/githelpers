@@ -19,7 +19,7 @@ import errno
 import re
 import subprocess
 import sys
-from typing import List, Tuple
+from typing import List, Protocol, Tuple
 
 
 RED = "\033[31m"
@@ -49,6 +49,19 @@ def main():
         sys.stderr.close()
 
 
+class _Line(Protocol):
+    """Interface a line object must implement."""
+
+    def pretty(self, max_graf: int, max_sha1: int, max_time: int) -> str:
+        """Return this line formatted and colored, ready for display on the console."""
+        ...
+
+    @property
+    def widths(self) -> Tuple[int, int, int]:
+        """The (graf_width, sha1_width, time_width) 3-tuple for this line."""
+        ...
+
+
 class _LogLines(List["_Line"]):
     """Collection of `_Line` object for each line in the git log."""
 
@@ -73,7 +86,7 @@ class _LogLines(List["_Line"]):
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
         assert proc.stdout is not None
 
-        return cls(_Line.from_text(line) for line in proc.stdout.readlines())
+        return cls(_FullLine.from_text(line) for line in proc.stdout.readlines())
 
     @property
     def _max_widths(self) -> Tuple[int, int, int]:
@@ -87,7 +100,7 @@ class _LogLines(List["_Line"]):
         return (max(graf_widths), max(sha1_widths), max(time_widths))
 
 
-class _Line(object):
+class _FullLine(object):
     """ A single git log line, broken into five tokens:
 
     * *graf* - the graphical ancestry line characters
