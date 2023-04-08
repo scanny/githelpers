@@ -42,9 +42,9 @@ def main(argv: Optional[List[str]] = None):
 
 
 def _drop(commitish_to_drop):
-    """Remove *commitish_to_drop* from its branch.
+    """Remove `commitish_to_drop` from its branch.
 
-    Exits with an error message if *commitish_to_drop* is reachable from more than one
+    Exits with an error message if `commitish_to_drop` is reachable from more than one
     branch or has other than exactly one parent.
     """
     _exit_if_not_valid_in_context(commitish_to_drop)
@@ -81,9 +81,9 @@ def _exit_if_not_valid_in_context(commitish):
 
 
 def _only_branch_containing(commitish):
-    """Return the name of the branch containing *commitish*.
+    """Return the name of the branch containing `commitish`.
 
-    Exit with an error message if *commitish* can be reached from other than exactly one
+    Exit with an error message if `commitish` can be reached from other than exactly one
     branch.
     """
     branch_names = branches_containing(commitish)
@@ -99,9 +99,9 @@ def _only_branch_containing(commitish):
 
 
 def _resolve_rev(commitish):
-    """Return the 40 character SHA1 hash for *committish*.
+    """Return the 40 character SHA1 hash for `committish`.
 
-    Exit with an error message if *commitish* does not resolve to a reachable commit in
+    Exit with an error message if `commitish` does not resolve to a reachable commit in
     the repository.
     """
     try:
@@ -118,7 +118,7 @@ def _resolve_rev(commitish):
 
 
 def _single_parent_of(commitish):
-    """Return the SHA1 hash of the single parent of *commitish*.
+    """Return the SHA1 hash of the single parent of `commitish`.
 
     Exit with an error message if there is other than a single parent.
     """

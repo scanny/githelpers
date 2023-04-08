@@ -7,13 +7,13 @@ from .runcmd import RunCmdError  # noqa
 
 
 def branch_exists(branch_name):
-    """Return |True| when *branch_name* exists in the current repository."""
+    """Return |True| when `branch_name` exists in the current repository."""
     cmd = ["git", "show-ref", "--verify", "refs/heads/%s" % branch_name]
     return return_code_of(cmd) == 0
 
 
 def branch_hash(branch_name):
-    """Return 40-char str SHA1 hash of commit pointed to by *branch_name*."""
+    """Return 40-char str SHA1 hash of commit pointed to by `branch_name`."""
     return output_of(["git", "rev-parse", branch_name]).strip()
 
 
@@ -30,13 +30,13 @@ def branch_names():
 
 
 def branches_containing(commitish):
-    """Return list of name of each local branch from which *commitish* is reachable."""
+    """Return list of name of each local branch from which `commitish` is reachable."""
     rev = full_hash_of(commitish)
     return [name for name in branch_names() if rev in rev_list(name)]
 
 
 def checkout(branch_name):
-    """Checkout branch having *branch_name*.
+    """Checkout branch having `branch_name`.
 
     Returns whatever output is send to stdout. Raises |RunCmdError| if checkout is
     unsuccessful.
@@ -55,7 +55,7 @@ def children_of_head():
 
 
 def create_branch_at(branch_name, commit_ref):
-    """Create branch *branch_name* at *commit_ref*.
+    """Create branch `branch_name` at `commit_ref`.
 
     Does not checkout the new branch. Returns stdout output, but this command is
     normally silent.
@@ -69,16 +69,16 @@ def current_branch_name():
 
 
 def delete_branch(branch_name):
-    """Delete the reference refs/heads/{*branch_name*}."""
+    """Delete the reference refs/heads/{`branch_name`}."""
     if branch_name == current_branch_name():
         raise ValueError("Cannot delete current branch '%s'" % branch_name)
     return output_of(["git", "branch", "-D", branch_name])
 
 
 def full_hash_of(commit_ish):
-    """Return str full 40-character SHA1 hash of commit identified by *commit_ish*.
+    """Return str full 40-character SHA1 hash of commit identified by `commit_ish`.
 
-    Raises |RunCmdError| if *commit_ish* does not correspond to a revision in the
+    Raises |RunCmdError| if `commit_ish` does not correspond to a revision in the
     repository.
     """
     return output_of(["git", "rev-parse", commit_ish]).strip()
@@ -116,7 +116,7 @@ def is_clean():
 
 
 def is_commit(commit_ref):
-    """Return |True| when *commit_ref* "points" to a commit in this repository."""
+    """Return |True| when `commit_ref` "points" to a commit in this repository."""
     ref = "%s^{commit}" % commit_ref
     cmd = ["git", "rev-parse", "-q", "--verify", "%s" % ref]
     return return_code_of(cmd) == 0
@@ -129,12 +129,12 @@ def is_git_repo():
 
 
 def is_reachable(commitish):
-    """Return |True| when *commitish* is reachable from at least one branch."""
+    """Return |True| when `commitish` is reachable from at least one branch."""
     return full_hash_of(commitish) in reachable_revs()
 
 
 def parent_revs_of(commitish):
-    """Return list of str SHA1 hash of each parent commit of *commitish*."""
+    """Return list of str SHA1 hash of each parent commit of `commitish`."""
     rev = full_hash_of(commitish)
     parents_spec = "%s^@" % rev
     return output_of(["git", "rev-parse", parents_spec]).split()
@@ -150,17 +150,17 @@ def reachable_revs():
 
 
 def rebase_onto(newbase, fork_point, branch_name):
-    """Rebase *branch_name* onto *newbase* exclusive of the commit at *fork_point*."""
+    """Rebase `branch_name` onto `newbase` exclusive of the commit at `fork_point`."""
     return output_of(
         ["git", "rebase", "--onto", newbase, fork_point, branch_name]
     ).rstrip()
 
 
 def reset_hard_to(commit_ref):
-    """Move current branch to *commit_ref*. Note this is potentially destructive."""
+    """Move current branch to `commit_ref`. Note this is potentially destructive."""
     return output_of(["git", "reset", "--hard", commit_ref])
 
 
 def rev_list(commitish):
-    """Return list of str SHA1 hash of each commit reachable from *commitish*."""
+    """Return list of str SHA1 hash of each commit reachable from `commitish`."""
     return output_of(["git", "rev-list", commitish]).split()
