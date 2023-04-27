@@ -19,7 +19,8 @@ import errno
 import re
 import subprocess
 import sys
-from typing import Iterable, Protocol, Tuple
+from typing import Iterable, Tuple
+from typing_extensions import Protocol
 
 
 RED = "\033[31m"
